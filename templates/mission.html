@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<title>Our Mission, Vision, and Values</title>
+<section id="herocareer" class="d-flex align-items-center justify-content-center">
+  <div class="container" data-aos="fade-up">
+    <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+      <div class="col-xl-6 col-lg-8">
+        <h1 style="font-size: 30px; line-height: 25px">Explore Our Core<span>.</span></h1>
+      </div>
+    </div>
+  </div>
+</section><!-- End Hero -->
+
+<main id="main">
+
+
+  <div class="container">
+    <div class="section-title pt-5" data-aos="fade-up">
+      <h2>Discover Our Purpose</h2>      
+      <p>{{ourcore.section|safe}}</p>
+    </div>   
+
+    <div class="mvv-container" id="mission" data-aos="fade-up">
+
+{% if ourcore %}
+     
+      <div class="mvv-block">
+        <div class="image">
+          <img src="{{ ourcore.MissionImage.url }}" alt="our mission" class="img-fluid">
+        </div>
+        <div class="content">
+          <h5>{{ourcore.MissionTitle|safe}}</h5>
+          <p class="fst-italic" style="text-align: justify;text-justify: auto;">
+            {{ourcore.MissionContent|safe}}
+          </p>
+        </div>
+      </div>
+      
+      <div class="mvv-block" id="vision" data-aos="fade-up">
+        <div class="image">
+          <img src="{{ ourcore.VisionImage.url }}" alt="our vision" class="img-fluid">
+        </div>
+        <div class="content">
+          <h5>{{ourcore.VisionTitle|safe}}</h5>
+          <p class="fst-italic" style="text-align: justify;text-justify: auto;">
+            {{ourcore.VisionContent|safe}}
+          </p>
+        </div>
+      </div>
+
+      <div class="mvv-block" id="values" data-aos="fade-up">
+        <div class="image">
+          <img src="{{ ourcore.ValuesImage.url }}" alt="our Values" class="img-fluid">
+        </div>
+        <div class="content">
+          <h5>{{ourcore.ValuesTitle|safe}}</h5>
+          <ul>
+            {% for key, value in ourcore.ValuesContent.items %}
+            <li style="text-align: justify;text-justify: inter-word;"><strong>{{ key |safe}}:</strong> {{ value |safe}}</li>
+            {% endfor %}
+            
+          </ul>
+        </div>
+      </div>
+
+
+    </div>
+
+{% else %}
+
+{% endif %} 
+  </div>
+
+
+
+
+
+
+</main>  
+{% endblock %}

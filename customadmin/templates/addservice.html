@@ -1,0 +1,124 @@
+{% extends 'baseadmin.html' %}
+{% load static %}
+
+{% block content %}
+<title>Add New Service</title>
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Add Service</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <li style="list-style: none;">
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+                    <use xlink:href="#check-circle-fill" />
+                </svg>
+                <div>
+                    <b>{{message}}</b>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <section class="section">
+        <div class="container border rounded p-4 bg-light">
+        <h2>Service Form</h2>
+        <form method="post" enctype="multipart/form-data" class="mt-4">
+            {% csrf_token %}
+
+            <!-- Service Title -->
+            <div class="mb-3 row">
+                <label for="{{ form.service_title.id_for_label }}" class="col-md-2 col-form-label">{{ form.service_title.label }}:</label>
+                <div class="col-md-10">
+                    {{ form.service_title }}
+                </div>
+            </div>
+
+            <!-- Service Description -->
+            <div class="mb-3 row">
+                <label for="{{ form.service_desc.id_for_label }}" class="col-md-2 col-form-label">{{ form.service_desc.label }}:</label>
+                <div class="col-md-10">
+                    {{ form.service_desc }}
+                </div>
+            </div>
+
+            <!-- Service Image -->
+            <div class="mb-3 row">
+                <label for="{{ form.serviceimage.id_for_label }}" class="col-md-2 col-form-label">{{ form.serviceimage.label }}:</label>
+                <div class="col-md-10">
+                    {{ form.serviceimage }}
+                </div>
+            </div>
+
+            <!-- Service Detail Description -->
+            <div class="mb-3 row">
+                <label for="{{ form.servicedetail_desc.id_for_label }}" class="col-md-2 col-form-label">{{ form.servicedetail_desc.label }}:</label>
+                <div class="col-md-10">
+                    {{ form.servicedetail_desc }}
+                </div>
+            </div>
+
+            <!-- Image Description -->
+            <div class="mb-3 row">
+                <label for="{{ form.image_desc.id_for_label }}" class="col-md-2 col-form-label">{{ form.image_desc.label }}:</label>
+                <div class="col-md-10">
+                    {{ form.image_desc }}
+                </div>
+            </div>
+
+            <!-- Sited Services Title -->
+            <div class="mb-3 row">
+                <label for="{{ form.Sited_Services_title.id_for_label }}" class="col-md-2 col-form-label">{{ form.Sited_Services_title.label }}:</label>
+                <div class="col-md-10">
+                    {{ form.Sited_Services_title }}
+                </div>
+            </div>
+
+            <!-- Sited Services Description -->
+            <div class="mb-3 row">
+                <label for="{{ form.SitedServices.id_for_label }}" class="col-md-2 col-form-label">{{ form.SitedServices.label }}:</label>
+                <div class="col-md-10">
+                    {{ form.SitedServices }}
+                </div>
+            </div>
+
+
+            
+
+            <!-- Image Sited Services -->
+            <div class="mb-3 row">
+                <label for="{{ form.image_Sited_Services.id_for_label }}" class="col-md-2 col-form-label">{{ form.image_Sited_Services.label }}:</label>
+                <div class="col-md-10">
+                    {{ form.image_Sited_Services }}
+                </div>
+            </div>
+
+
+            <div class="mb-3 row">
+                <label for="{{ form.display_on_screen.id_for_label }}" class="col-md-2 col-form-label">{{ form.image_Sited_Services.label }}:</label>
+                <div class="col-md-10">
+                    {{ form.display_on_screen }}
+                </div>
+            </div>
+
+
+            
+
+            <button type="submit" class="btn btn-primary">Add Service</button>
+        </form>
+</div>
+    </section>
+</main><!-- End #main -->
+
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<title>Career</title>
+
+<section id="herocareer" class="d-flex align-items-center justify-content-center">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-xl-6 col-lg-8">
+          <h1>Career<span>.</span></h1>
+        </div>
+      </div>
+    </div>
+</section><!-- End Hero -->
+
+
+
+
+
+<!-- ======= career Section ======= -->
+
+  <section class="career">
+      <div class="container" data-aos="fade-up">
+  
+        <div class="row">
+          <div class="col-lg-6 order-1 order-lg-2 d-flex justify-content-center align-items-center" data-aos="fade-left" data-aos-delay="100">
+            <img src="https://images.pexels.com/photos/218863/pexels-photo-218863.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="img-fluid" alt="career">
+          </div>
+          
+          <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right" data-aos-delay="100">
+            <h3>Grow With Us</h3>
+            <h4 class="mb-5" style="margin: 28px 0 0; font-size: 30px; line-height: 38px; font-weight: normal;color:black">Innovation, Diligence, and Excellence when it comes to working together, we know a thing or two career teamwork.</h4>
+          
+            <a class="findrole" href="#career"> <button class="btn btn-warning">Find Your Role</button></a>
+
+          </div>
+
+          
+        </div>
+  
+      </div>
+    </section><!-- End career Section -->
+  
+
+
+
+
+<section class="servicesdetail" id="career" class="features">
+
+    <div class="container" data-aos="fade-up">
+      
+        {% comment %} <h1>Current Jobs Opportunities</h1> {% endcomment %}
+        <h2 class="h2 text-center">Current Jobs Opportunities</h2>
+        <br>
+       
+
+        <table class="table">
+
+            <tbody>
+        {% if careers %}
+        
+            
+            {% for jobs in careers %}
+            
+              
+                <tr class="p-5">
+
+                    <td class="mr-5">
+                        <div>
+                            <h3>{{jobs.JobTitle|safe}} <span style="font-size: 15px; color:black;">Created on {{jobs.created_at}}</span>
+                                
+                                {% if jobs.JobStatus == "Open" %}
+                                  <span style="font-size: 15px; color:green">{{jobs.JobStatus}} </span> 
+                                {% else %}
+                                  <span style="font-size: 15px; color:red">{{jobs.JobStatus}} </span>
+                                {% endif %}
+                                
+                            </h3>
+
+
+                            <p>{{jobs.JobDetail|safe}}</p>
+                        </div>
+                    </td>
+                    <td class="text-end mr-5 " style=" padding-top: 30px;">
+                        <a href="{% url 'career-details-page' jobs.id %}"> <button class="btn btn-warning ">View Details</button></a>
+                    </td>
+
+                </tr>
+                
+            {% endfor %} 
+
+          {% else %}
+              <p>No Job Posted</p>
+          {% endif %} 
+            
+
+            </tbody>
+        </table>
+
+
+
+
+
+
+
+    </div>
+   
+   </section>
+
+
+{% endblock %}

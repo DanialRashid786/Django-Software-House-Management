@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<title>Servise Detail</title>
+<section id="herocareer" class="d-flex align-items-center justify-content-center">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-xl-6 col-lg-8">
+          <h1 class="h1 pb-3" style="font-size: 35px; line-height: 40px">{{service.service_title |safe}}</h1>
+          <p style="color: rgba(255, 255, 255, 0.9);">We are a software development company specializing in taking your vision from idea to launch.</p>
+        </div>
+      </div>
+
+      
+
+    </div>
+  </section><!-- End Hero -->
+
+
+
+
+
+
+
+<!-- ======= Portfolio Details Section ======= -->
+<section id="services-details" class="services-details">
+  <div class="container">
+    <h2 class="text-center pb-4 fw-bold">Service Details</h2>
+
+    <div class="row gy-4 pt-3">
+
+      <div class="col-lg-5">
+        <div class="services-details-slider swiper">
+          <div class="swiper-wrapper align-items-center">
+
+            <div class="swiper-slide">
+              <img src="/media/{{service.image_desc}}" alt="service">
+            </div>
+
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+
+
+
+      <div class="col-lg-7">
+        <div class="services-description">
+          <h2>{{service.service_title|safe}}</h2>
+          <p class="text-justify">
+            {{service.servicedetail_desc|safe}}
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+<br><br>
+
+
+    <div class="row gy-4">
+
+      <div class="col-lg-8 order-lg-1 order-2">
+
+        <div class="portfolio-info">
+          <h3>{{service.Sited_Services_title|safe}}</h3>
+          
+       
+           
+          <ol>
+               
+            {% comment %} {% for key, value in datadec.items %}
+                <li style="text-align: justify;"><strong>{{ key |safe}}</strong>: {{ value |safe}}</li>
+            {% endfor %} {% endcomment %}
+
+            {% for item in datadec %}
+            <li style="text-align: justify;">{{ item }}</li>
+        {% endfor %}
+        
+        </ol>
+     
+        
+ 
+          <br>
+
+          <a href="{% url 'perposalrequest' service.id service.service_title %}">
+            <button type="button" class="btn btn-warning p-4"><b>Request Form</b></button>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 order-lg-2 order-1">
+        
+       <div class="services-details-slider swiper">
+          <div class="swiper-wrapper align-items-center">
+
+            <div class="swiper-slide">
+              <img src="/media/{{service.image_Sited_Services}}" alt="" class="img-fluid">
+            </div>
+
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+        
+      </div>
+
+    </div>
+
+  </div>
+</section><!-- End Portfolio Details Section -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======= Breadcrumbs ======= -->
+{% comment %} <section class="servicesdetail" id="features" class="features">
+  <div class="container" data-aos="fade-up">
+      <h1 class="h1">{{service.service_title}}</h1> <br>
+    <div class="row">
+      <div class="col-md-8 col-lg-4 col-xl-5 order-1 order-lg-2 d-flex align-items-center order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
+        <img src="/media/{{service.image_desc}}" class="img-fluid" alt="">
+      </div>
+      <div class="col-md-12 col-lg-8 col-xl-7 order-2 order-lg-1">
+        <div class="content" data-aos="fade-right" data-aos-delay="100">
+          <p class="fst-italic text-justify">
+            {{service.servicedetail_desc|safe}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="servicesdetail" id="features" class="features">
+  <div class="container" data-aos="fade-up">
+    <div class="row">
+      <h3 class="h3 fw-bold text-lg-start">{{service.Sited_Services_title|safe}}:</h3>
+
+      <div class="col-md-12 col-lg-8 col-xl-7 order-2 order-lg-1">
+        <div class="content" data-aos="fade-right" data-aos-delay="100">
+          <p class="text-justify">
+            {{service.Sited_Services|safe}}
+          </p>
+        </div>
+      </div>
+      <div class="col-md-8 col-lg-4 col-xl-5 order-1 order-lg-2 d-flex align-items-center order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
+        <img src="/media/{{service.image_Sited_Services}}" class="img-fluid" alt="">
+      </div>
+    </div>
+    <br>
+    <a href="{% url 'perposalrequest' %}">
+      <button type="button" class="btn btn-warning p-4"><b>Request Form</b></button>
+    </a>
+  </div>
+</section> {% endcomment %}
+
+   
+
+
+
+{% endblock %}

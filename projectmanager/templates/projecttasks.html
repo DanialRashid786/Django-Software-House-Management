@@ -1,0 +1,3633 @@
+{% extends 'basePMadmin.html' %}
+{% load static %}
+{% block content %}
+
+
+<title>kanban board</title>
+
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1> kanban board</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+        <li class="breadcrumb-item active">kanban board</li>
+      </ol>
+    </nav>
+  </div>
+
+
+
+
+
+  
+
+
+  <!-- End Page Title -->
+  {% comment %} <div class="nk-block-des text-soft"><p>You have total {{total_projects}} tasks.</p></div> {% endcomment %}
+
+  <section class="section">
+    <div class="container-fluid" style="overflow-x:auto;">
+      {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+            <li style="list-style: none;">
+              <div class="alert alert-success d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+                  <use xlink:href="#check-circle-fill"/>
+                </svg>
+                <div>
+                  <b>{{ message }}</b>
+                </div>
+              </div>
+            </li>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+
+
+      <div class="container-fluid">
+        <div class="nk-content-inner">
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                   
+                    <div class="nk-block-between">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">{{projectname.project_title|safe}}</h3>
+                        </div>
+                        
+                    </div>
+
+
+                </div>
+
+                
+                        <div class="kanban-container">
+
+{% comment %} //////////////////////////////////////1nd col//////////////////////////////////////// {% endcomment %}
+
+                            <div data-id="_open" data-order="1" class="kanban-board" style="width: 320px; margin-left: 0px; margin-right: 0px;">
+                                <header class="kanban-board-header kanban-light">
+                                    <div class="kanban-title-board">
+                                        <div class="kanban-title-content">
+                                            <h6 class="title">Todo</h6>
+                                            <span class="badge rounded-pill bg-outline-light text-dark">{{task_count}}</span>
+                                        </div>
+                                        <div class="kanban-title-content">
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle btn btn-sm btn-icon btn-trigger me-n1" data-bs-toggle="dropdown"><em class="icon ni ni-more-h"></em></a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit Board</span></a></li>
+                                                        <li><a href="#"><em class="icon ni ni-plus-sm"></em><span>Add Task</span></a></li>
+                                                        <li><a href="#"><em class="icon ni ni-plus-sm"></em><span>Add Option</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </header>
+                                <main class="kanban-drag">
+
+                         
+                        {% for task in projecttask %}
+                        <div class="kanban-item">
+
+                            <div class="kanban-item-title">
+                                <h6 class="title">{{task.name|safe|capfirst}}</h6>
+                                <div class="dropdown">
+                                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                                        <div class="user-avatar-group">
+                                            <div class="user-avatar xs bg-primary"><span>{{ task.assigned_to.user.username|first|capfirst }}</span></div>
+                                        </div>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <ul class="link-list-opt no-bdr p-3 g-2">
+                                            <li>
+                                                <div class="user-card">
+                                                    
+                                                    <div class="user-avatar sm bg-primary">
+                                                        <span>{{ task.assigned_to.user.username|first|capfirst }}</span>
+                                                    </div>
+                                                    <div class="user-name">
+                                                        <span class="tb-lead">{{task.assigned_to|safe}} ({{task.assigned_to.team_type}})</span>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            
+                            <div class="kanban-item-text">
+                                <p>{{task.description|safe}}</p>
+                            </div>
+
+                            
+                            <td>
+                                {% if task.TaskRequirementFile and task.get_file_size %}
+                               
+                                <a href="/media/{{task.TaskRequirementFile}}">{{task.get_file_size}}</a> 
+                                {% else %}
+                                <p></p>
+                                {% endif %}
+                                </td>
+                             
+
+
+                            <ul class="kanban-item-tags">
+                                {% comment %} <li><span class="badge bg-info">Dashlite</span></li>
+                                <li><span class="badge bg-warning">UI Design</span></li>
+                                <li><span class="badge bg-info">Dashlite</span></li> {% endcomment %}
+                                {% for tag in task.tag_list|slice:":3" %}
+                                   <li><span class="badge bg-info">{{ tag|escape }}</span></li>
+                                {% endfor %}
+                                {% if task.tag_list|length > 3 %}
+                                    <li><span class="badge bg-warning">+{{ task.tag_list|length|add:"-3" }} more</span></li>
+                                {% endif %}
+                                
+                            </ul>
+                            <div class="kanban-item-meta">
+                                <ul class="kanban-item-meta-list">
+                                   
+                                
+                                    {% if task.remaining_days == 1  %}
+                                    <span class="badge badge-danger custom-badge">
+                                        <em class="icon ni ni-clock"></em>
+                                        <span style="color:red">Due Tomorrow</span>
+                                    </span>
+                                {% elif task.remaining_days > 1  %}
+                                    <span class="badge badge-dim bg-primary">
+                                        <em class="icon ni ni-clock"></em>
+                                        <span>{{ task.remaining_days }} Days Left</span>
+                                    </span>
+                                
+                                
+                                
+              
+                                {% else %}
+                                    <span class="badge badge-secondary">
+                                        <em class="icon ni ni-clock"></em>
+                                        <span style="color:red">Overdue</span>
+                                    </span>
+                                {% endif %}
+
+                                    
+                                    <li><em class="icon ni ni-notes"></em><span>{{task.category|safe}}</span></li>
+                                </ul>
+                                {% comment %} <ul class="kanban-item-meta-list">
+                                    <li><em class="icon ni ni-clip"></em><span>1</span></li>
+                                    <li><em class="icon ni ni-comments"></em><span>4</span></li>
+                                </ul> {% endcomment %}
+                            </div>
+                        </div>
+
+
+                        {% endfor %}            
+                                    
+
+
+                                    
+
+                                </main>
+                            </div>
+                            
+                
+                
+
+{% comment %} //////////////////////////////////////2nd col//////////////////////////////////////// {% endcomment %}
+                
+                
+                
+                            <div data-id="_in_progress" data-order="2" class="kanban-board" style="width: 320px; margin-left: 0px; margin-right: 0px;">
+                                <header class="kanban-board-header kanban-primary">
+                                    <div class="kanban-title-board">
+                                        <div class="kanban-title-content">
+                                            <h6 class="title">In Progress</h6>
+                                            <span class="badge rounded-pill bg-outline-light text-dark">{{task_count1}}</span>
+                                        </div>
+                                        <div class="kanban-title-content">
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle btn btn-sm btn-icon btn-trigger me-n1" data-bs-toggle="dropdown">
+                                                    <em class="icon ni ni-more-h"></em>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit Board</span></a></li>
+                                                        <li><a href="#"><em class="icon ni ni-plus-sm"></em><span>Add Task</span></a></li>
+                                                        <li><a href="#"><em class="icon ni ni-plus-sm"></em><span>Add Option</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </header>
+                                <main class="kanban-drag">
+
+
+                                    {% for task in projecttask1 %}
+
+                                    <div class="kanban-item">
+                                        <div class="kanban-item-title">
+                                            <h6 class="title">{{task.name|safe|capfirst}}</h6>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <div class="user-avatar-group">
+                                                        <div class="user-avatar xs bg-danger"><span>{{ task.assigned_to.user.username|first|capfirst }}</span></div>
+                                                    </div>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="link-list-opt no-bdr p-3 g-2">
+                                                        <li>
+                                                            <div class="user-card">
+                                                                <div class="user-avatar sm bg-danger">
+                                                                    <span>{{ task.assigned_to.user.username|first|capfirst }}</span>
+                                                                </div>
+                                                                <div class="user-name">
+                                                                    <span class="tb-lead">{{task.assigned_to|safe }}({{task.assigned_to.team_type}})</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="kanban-item-text">
+                                            <p>{{task.description|safe}}</p>
+                                        </div>
+
+                                        <td>
+                                            {% if task.TaskRequirementFile and task.get_file_size %}
+                                           
+                                            <a href="/media/{{task.TaskRequirementFile}}">{{task.get_file_size}}</a> 
+                                            {% else %}
+                                            <p></p>
+                                            {% endif %}
+                                            </td>
+
+                                        <ul class="kanban-item-tags">
+                                            {% comment %} <li><span class="badge bg-info">Dashlite</span></li>
+                                            <li><span class="badge bg-warning">UI Design</span></li>
+                                            <li><span class="badge bg-info">Dashlite</span></li> {% endcomment %}
+                                            {% for tag in task.tag_list|slice:":3" %}
+                                               <li><span class="badge bg-info">{{ tag|escape }}</span></li>
+                                            {% endfor %}
+                                            {% if task.tag_list|length > 3 %}
+                                                <li><span class="badge bg-warning">+{{ task.tag_list|length|add:"-3" }} more</span></li>
+                                            {% endif %}
+                                            
+                                        </ul>
+                                        <div class="kanban-item-meta">
+                                            <ul class="kanban-item-meta-list">
+                                               
+                                            
+                                                {% if task.remaining_days == 1  %}
+                                                <span class="badge badge-danger custom-badge">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span style="color:red">Due Tomorrow</span>
+                                                </span>
+                                            {% elif task.remaining_days > 1  %}
+                                                <span class="badge badge-dim bg-primary">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span>{{ task.remaining_days }} Days Left</span>
+                                                </span>
+                                            
+                                            
+                                            
+                          
+                                            {% else %}
+                                                <span class="badge badge-secondary">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span style="color:red">Overdue</span>
+                                                </span>
+                                            {% endif %}
+            
+                                                
+                                                <li><em class="icon ni ni-notes"></em><span>{{task.category|safe}}</span></li>
+                                            </ul>
+                                            {% comment %} <ul class="kanban-item-meta-list">
+                                                <li><em class="icon ni ni-clip"></em><span>1</span></li>
+                                                <li><em class="icon ni ni-comments"></em><span>4</span></li>
+                                            </ul> {% endcomment %}
+                                        </div>
+                                    </div>
+            
+            
+                                    {% endfor %}
+                                    
+                                    
+                                </main>
+                               
+                            </div>
+
+                            
+
+
+                            
+
+
+                            <div data-id="_to_revision" data-order="3" class="kanban-board" style="width: 320px; margin-left: 0px; margin-right: 0px;">
+                                <header class="kanban-board-header kanban-warning">
+                                    <div class="kanban-title-board">
+                                        <div class="kanban-title-content">
+                                            <h6 class="title">Revision</h6>
+                                            <span class="badge rounded-pill bg-outline-light text-dark">{{task_count4}}</span>
+                                        </div>
+                                        <div class="kanban-title-content">
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle btn btn-sm btn-icon btn-trigger me-n1" data-bs-toggle="dropdown">
+                                                    <em class="icon ni ni-more-h"></em>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit Board</span></a></li>
+                                                        <li><a href="#"><em class="icon ni ni-plus-sm"></em><span>Add Task</span></a></li>
+                                                        <li><a href="#"><em class="icon ni ni-plus-sm"></em><span>Add Option</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </header>
+                                <main class="kanban-drag">
+
+                                    {% for task in projecttask4 %}
+
+                                    <div class="kanban-item">
+                                        <div class="kanban-item-title">
+                                            <h6 class="title">{{task.name|safe|capfirst}}</h6>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <div class="user-avatar-group">
+                                                        <div class="user-avatar xs bg-secondary"><span>{{ task.assigned_to.user.username|first|capfirst }}</span></div>
+                                                    </div>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="link-list-opt no-bdr p-3 g-2">
+                                                        <li>
+                                                            <div class="user-card">
+                                                                <div class="user-avatar sm bg-secondary">
+                                                                    <span>{{ task.assigned_to.user.username|first|capfirst }}</span>
+                                                                </div>
+                                                                <div class="user-name">
+                                                                    <span class="tb-lead">{{task.assigned_to|safe}} ({{task.assigned_to.team_type}})</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="kanban-item-text">
+                                            <p>{{task.description|safe}}</p>
+
+
+                                           
+                                        </div>
+                                        <ul class="kanban-item-tags">
+                                            {% comment %} <li><span class="badge bg-info">Dashlite</span></li>
+                                            <li><span class="badge bg-warning">UI Design</span></li>
+                                            <li><span class="badge bg-info">Dashlite</span></li> {% endcomment %}
+                                            {% for tag in task.tag_list|slice:":3" %}
+                                               <li><span class="badge bg-info">{{ tag|escape }}</span></li>
+                                            {% endfor %}
+                                            {% if task.tag_list|length > 3 %}
+                                                <li><span class="badge bg-warning">+{{ task.tag_list|length|add:"-3" }} more</span></li>
+                                            {% endif %}
+                                            
+                                        </ul>
+                                        <div class="kanban-item-meta">
+                                            <ul class="kanban-item-meta-list">
+                                               
+                                            
+                                                {% if task.remaining_days == 1  %}
+                                                <span class="badge badge-danger custom-badge">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span style="color:red">Due Tomorrow</span>
+                                                </span>
+                                            {% elif task.remaining_days > 1  %}
+                                                <span class="badge badge-dim bg-primary">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span>{{ task.remaining_days }} Days Left</span>
+                                                </span>
+                                            
+                                            
+                                            
+                          
+                                            {% else %}
+                                                <span class="badge badge-secondary">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span style="color:red">Overdue</span>
+                                                </span>
+                                            {% endif %}
+            
+                                                
+                                                <li><em class="icon ni ni-notes"></em><span>{{task.category|safe}}</span></li>
+                                            </ul>
+
+                                            <ul class="kanban-item-meta-list">
+                                                {% comment %} <li><em class="icon ni ni-clip"></em><span>1</span></li>
+                                                <li><em class="icon ni ni-comments"></em><span>4</span></li> {% endcomment %}
+
+                                                <li>
+                                                    <a href="{% url 'View_document' task.id %}" target="_blank">
+                                                        <button class="btn btn-sm btn-light"><li class="bi-eye"></li></button>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'Download_document' task.id %}">
+                                                        <button class="btn btn-sm bg-primary-light"><li class="ri-download-2-fill"></li></button>
+                                                    </a>
+                                                </li>
+                                            </ul> 
+
+                                        </div>
+                                    </div>
+            
+            
+                                    {% endfor %}
+
+
+                                </main>
+                            </div>
+
+
+
+
+
+
+
+
+                
+{% comment %}///////////////////////////// 3rd col////////////////////////////////// {% endcomment %}
+
+
+                            <div data-id="_to_review" data-order="4" class="kanban-board" style="width: 320px; margin-left: 0px; margin-right: 0px;">
+                                <header class="kanban-board-header kanban-warning">
+                                    <div class="kanban-title-board">
+                                        <div class="kanban-title-content">
+                                            <h6 class="title">To Review</h6>
+                                            <span class="badge rounded-pill bg-outline-light text-dark">{{task_count2}}</span>
+                                        </div>
+                                        <div class="kanban-title-content">
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle btn btn-sm btn-icon btn-trigger me-n1" data-bs-toggle="dropdown">
+                                                    <em class="icon ni ni-more-h"></em>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit Board</span></a></li>
+                                                        <li><a href="#"><em class="icon ni ni-plus-sm"></em><span>Add Task</span></a></li>
+                                                        <li><a href="#"><em class="icon ni ni-plus-sm"></em><span>Add Option</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </header>
+                                <main class="kanban-drag">
+
+                                    {% for task in projecttask2 %}
+
+                                    <div class="kanban-item">
+                                        <div class="kanban-item-title">
+                                            <h6 class="title">{{task.name|safe|capfirst}}</h6>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <div class="user-avatar-group">
+                                                        <div class="user-avatar xs bg-secondary"><span>{{ task.assigned_to.user.username|first|capfirst }}</span></div>
+                                                    </div>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="link-list-opt no-bdr p-3 g-2">
+                                                        <li>
+                                                            <div class="user-card">
+                                                                <div class="user-avatar sm bg-secondary">
+                                                                    <span>{{ task.assigned_to.user.username|first|capfirst }}</span>
+                                                                </div>
+                                                                <div class="user-name">
+                                                                    <span class="tb-lead">{{task.assigned_to|safe}} ({{task.assigned_to.team_type}})</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="kanban-item-text">
+                                            <p>{{task.description|safe}}</p>
+                                        </div>
+                                        <ul class="kanban-item-tags">
+                                            {% comment %} <li><span class="badge bg-info">Dashlite</span></li>
+                                            <li><span class="badge bg-warning">UI Design</span></li>
+                                            <li><span class="badge bg-info">Dashlite</span></li> {% endcomment %}
+                                            {% for tag in task.tag_list|slice:":3" %}
+                                               <li><span class="badge bg-info">{{ tag|escape }}</span></li>
+                                            {% endfor %}
+                                            {% if task.tag_list|length > 3 %}
+                                                <li><span class="badge bg-warning">+{{ task.tag_list|length|add:"-3" }} more</span></li>
+                                            {% endif %}
+                                            
+                                        </ul>
+                                        <div class="kanban-item-meta">
+                                            <ul class="kanban-item-meta-list">
+                                               
+                                            
+                                                {% if task.remaining_days == 1  %}
+                                                <span class="badge badge-danger custom-badge">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span style="color:red">Due Tomorrow</span>
+                                                </span>
+                                            {% elif task.remaining_days > 1  %}
+                                                <span class="badge badge-dim bg-primary">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span>{{ task.remaining_days }} Days Left</span>
+                                                </span>
+                                            
+                                            
+                                            
+                          
+                                            {% else %}
+                                                <span class="badge badge-secondary">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span style="color:red">Overdue</span>
+                                                </span>
+                                            {% endif %}
+            
+                                                
+                                                <li><em class="icon ni ni-notes"></em><span>{{task.category|safe}}</span></li>
+                                            </ul>
+
+                                            <ul class="kanban-item-meta-list">
+                                                {% comment %} <li><em class="icon ni ni-clip"></em><span>1</span></li>
+                                                <li><em class="icon ni ni-comments"></em><span>4</span></li> {% endcomment %}
+
+                                                <li>
+                                                    <button type="button" class="btn btn-sm btn-primary" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#updatetaskstatus" 
+                                                        data-task-id="{{ task.id }}">
+                                                      Update
+                                                </button>
+
+                                                </li>
+
+                                                <li>
+                                                    <a href="{% url 'View_document' task.id %}" target="_blank">
+                                                        <button class="btn btn-sm btn-light"><li class="bi-eye"></li></button>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{% url 'Download_document' task.id %}">
+                                                        <button class="btn btn-sm bg-primary-light"><li class="ri-download-2-fill"></li></button>
+                                                    </a>
+                                                </li>
+                                            </ul> 
+
+                                        </div>
+                                    </div>
+            
+
+
+ <!-- Inside your modal form -->
+ <div class="modal fade" id="updatetaskstatus" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Task Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Django form for updating task status -->
+                <form method="post" action="{% url 'Kanbanboard' task.project.id task.project.project_title %}">
+                    {% csrf_token %}
+                    <input type="hidden" value="{{task.id}}" id="taskId" name="task_id">
+                
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Task Status:</label>
+                        <select class="form-select" id="status" name="status" onchange="toggleFileUpload()">
+                            {% comment %} <option value=""></option> {% endcomment %}
+                            <option value="to_review" {% if task.status == 'to_review' %} selected {% endif %}>To Review</option>
+                            <option value="completed">Completed</option>
+                            <option value="needs_revision">Needs Revision</option>
+                        </select>
+                
+                        {% comment %} <br>
+                        <label for="remarks" id="remarksLabel">Remarks:</label>
+                        <textarea name="remarks" id="remarks" cols="50" rows="5" {% if task.status not in 'to_review,completed,needs_revision' %}
+                        required {% endif %}></textarea> {% endcomment %}
+                    </div>
+                
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </form>
+                
+
+                {% comment %} <script>
+                    function toggleFileUpload() {
+                        var statusSelect = document.getElementById("status");
+                        var remarksLabel = document.getElementById("remarksLabel");
+                        var remarksTextarea = document.getElementById("remarks");
+                
+                        // Check if the selected value is "to_review"
+                        if (statusSelect.value != "to_review") {
+                            remarksLabel.style.display = "block";  // Show label
+                            remarksTextarea.style.display = "block";  // Show textarea
+                            remarksTextarea.setAttribute("required", "required");  // Make remarks input required
+                        } else {
+                            remarksLabel.style.display = "none";  // Hide label
+                            remarksTextarea.style.display = "none";  // Hide textarea
+                            remarksTextarea.removeAttribute("required");  // Remove required attribute
+                        }
+                    }
+                </script> {% endcomment %}
+                
+                
+                
+                
+                
+                
+                
+                {% comment %} <script>
+                    function toggleFileUpload() {
+                        var statusSelect = document.getElementById("status");
+                        var fileUploadOption = document.getElementById("fileUploadOption");
+                        var docInput = document.getElementById("doc");
+                
+                        // Check if the selected value is "to_review"
+                        if (statusSelect.value === "to_review") {
+                            fileUploadOption.style.display = "block";  // Show file upload option
+                            docInput.setAttribute("required", "required");  // Make file input required
+                        } else {
+                            fileUploadOption.style.display = "none";   // Hide file upload option
+                            docInput.removeAttribute("required");  // Remove required attribute
+                        }
+                    }
+                </script> {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<input type="hidden" id="taskId" name="taskId">
+
+
+
+
+            
+                                    {% endfor %}
+
+
+                                </main>
+                            </div>
+                            
+                
+                
+                
+{% comment %}//////////////////////4rd col////////////////////////////  {% endcomment %}
+    
+                            <div data-id="_completed" data-order="5" class="kanban-board" style="width: 320px; margin-left: 0px; margin-right: 0px;">
+                                <header class="kanban-board-header kanban-success">
+                                    <div class="kanban-title-board">
+                                        <div class="kanban-title-content">
+                                            <h6 class="title">Completed</h6>
+                                            <span class="badge rounded-pill bg-outline-light text-dark">{{task_count3}}</span>
+                                        </div>
+                                        <div class="kanban-title-content">
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle btn btn-sm btn-icon btn-trigger me-n1" data-bs-toggle="dropdown">
+                                                    <em class="icon ni ni-more-h"></em>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="link-list-opt no-bdr">
+                                                        <li><a href="#"><em class="icon ni ni-edit"></em><span>Edit Board</span></a></li>
+                                                        <li><a href="#"><em class="icon ni ni-plus-sm"></em><span>Add Task</span></a></li>
+                                                        <li><a href="#"><em class="icon ni ni-plus-sm"></em><span>Add Option</span></a></li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </header>
+                                <main class="kanban-drag">
+
+                                    {% for task in projecttask3 %}
+
+                                    <div class="kanban-item">
+                                        <div class="kanban-item-title">
+                                            <h6 class="title">{{task.name|safe|capfirst}}</h6>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
+                                                    <div class="user-avatar-group">
+                                                        <div class="user-avatar xs bg-success"><span>{{ task.assigned_to.user.username|first|capfirst }}</span></div>
+                                                    </div>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <ul class="link-list-opt no-bdr p-3 g-2">
+                                                        <li>
+                                                            <div class="user-card">
+                                                                <div class="user-avatar sm bg-success">
+                                                                    <span>{{ task.assigned_to.user.username|first|capfirst }}</span>
+                                                                </div>
+                                                                <div class="user-name">
+                                                                    <span class="tb-lead">{{task.assigned_to|safe}} ({{task.assigned_to.team_type}})</span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="kanban-item-text">
+                                            <p>{{task.description|safe}}</p>
+                                        </div>
+                                        <ul class="kanban-item-tags">
+                                            {% comment %} <li><span class="badge bg-info">Dashlite</span></li>
+                                            <li><span class="badge bg-warning">UI Design</span></li>
+                                            <li><span class="badge bg-info">Dashlite</span></li> {% endcomment %}
+                                            {% for tag in task.tag_list|slice:":3" %}
+                                               <li><span class="badge bg-info">{{ tag|escape }}</span></li>
+                                            {% endfor %}
+                                            {% if task.tag_list|length > 3 %}
+                                                <li><span class="badge bg-warning">+{{ task.tag_list|length|add:"-3" }} more</span></li>
+                                            {% endif %}
+                                            
+                                        </ul>
+                                        <div class="kanban-item-meta">
+                                            <ul class="kanban-item-meta-list">
+                                               
+                                            
+                                                <span class="badge badge-danger custom-badge">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span style="color:green">{{task.status}}   </span>
+                                                </span>
+
+                                                <span class="badge badge-danger custom-badge">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span style="color:purple"> ({{task.updated_at}}) </span>
+                                                </span>
+
+
+                                                {% comment %} {% if task.remaining_days == 1  %}
+                                                <span class="badge badge-danger custom-badge">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span style="color:red">Due Tomorrow</span>
+                                                </span>
+                                            {% elif task.remaining_days > 1  %}
+                                                <span class="badge badge-dim bg-primary">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span>{{ task.remaining_days }} Days Left</span>
+                                                </span>
+                                            
+                                            
+                                            
+                          
+                                            {% else %}
+                                                <span class="badge badge-secondary">
+                                                    <em class="icon ni ni-clock"></em>
+                                                    <span style="color:red">Overdue</span>
+                                                </span>
+                                            {% endif %} {% endcomment %}
+            
+                                                
+                                                <li><em class="icon ni ni-notes"></em><span>{{task.category|safe}}</span></li>
+                                            </ul>
+                                            <li>
+                                                <a href="{% url 'View_document' task.id %}" target="_blank">
+                                                    <button class="btn btn-sm btn-light"><li class="bi-eye"></li></button>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'Download_document' task.id %}">
+                                                    <button class="btn btn-sm bg-primary-light"><li class="ri-download-2-fill"></li></button>
+                                                </a>
+                                            </li>
+                                        </div>
+                                    </div>
+            
+            
+                                    {% endfor %}
+
+                                </main>
+                               
+                            </div>
+                            
+
+
+
+
+</div>
+
+
+
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+      
+    </div>
+  </section>
+
+</main>
+<!-- End #main -->
+
+
+
+<style>
+
+    .kanban-container {
+        position: relative;
+        box-sizing: border-box;
+        width: auto;
+        display: flex;
+        margin-left: -14px;
+        margin-right: -14px;
+        overflow: auto
+    }
+    ma .kanban-container * {
+        box-sizing: border-box
+    }
+
+    .nk-content-body {
+        flex-grow: 1
+    }
+    
+    ma .kanban-container * {
+        box-sizing: border-box
+    }
+ 
+    .kanban-board {
+        padding: 14px;
+        position: relative;
+        transition: all .3s cubic-bezier(.23,1,.32,1);
+        flex-shrink: 0
+    }
+    
+    .kanban-board.disabled-board {
+        opacity: .3
+    }
+    
+    .kanban-board.is-moving.gu-mirror {
+        transform: rotate(3deg)
+    }
+    
+    .kanban-board.is-moving.gu-mirror .kanban-drag {
+        overflow: hidden;
+        padding-right: 50px
+    }
+    
+    .kanban-board-header {
+        background: #fff;
+        border: 1px solid #e5e9f2;
+        border-top: 3px solid #dbdfea;
+        border-radius: 4px;
+        padding: .5rem 1.25rem;
+        margin-bottom: 1rem
+    }   
+
+    .kanban-primary {
+        border-top-color: #6576ff
+    }
+    
+    .kanban-success {
+        border-top-color: #1ee0ac
+    }
+    
+    .kanban-info {
+        border-top-color: #09c2de
+    }
+    
+    .kanban-warning {
+        border-top-color: #f4bd0e
+    }
+    
+    .kanban-danger {
+        border-top-color: #e85347
+    }
+    
+    .kanban-title-content {
+        display: flex;
+        align-items: center
+    }
+    
+    .kanban-title-content .title {
+        font-size: .9375rem;
+        margin-bottom: 0;
+        margin-right: .75rem;
+        color: #526484
+    }
+    .kanban-title-content{
+        color: #fff!important
+    }
+    
+    .kanban-title-board {
+        display: flex;
+        align-items: center;
+        justify-content: space-between
+    }
+    
+    .kanban-board header .kanban-title-button {
+        float: right
+    }
+    
+    .kanban-board .kanban-drag {
+        min-height: 100px;
+        margin-bottom: 1rem
+    }
+    
+    .kanban-board .kanban-drag:empty {
+        border-radius: 4px;
+        border: 1px dashed #e5e9f2
+    }
+    
+    .kanban-board:after {
+        clear: both;
+        display: block;
+        content: ""
+    }
+    
+    .kanban-item {
+        border-radius: 4px;
+        border: 1px solid #e5e9f2;
+        padding: 1rem 1.25rem;
+        margin-bottom: .75rem;
+        background: #fff;
+        transition: all .3s cubic-bezier(.23,1,.32,1)
+    }
+    
+    .kanban-item-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between
+    }
+    
+    .kanban-item-title+.kanban-item-text {
+        margin-top: .5rem
+    }
+    
+    .kanban-item-title .title {
+        font-size: .9375rem;
+        margin-bottom: 0;
+        margin-right: .75rem
+    }
+    
+    .kanban-item-tags {
+        display: flex;
+        padding-top: .5rem;
+        margin: -.125rem
+    }
+    
+    .kanban-item-tags li {
+        padding: .125rem
+    }
+    
+    .kanban-item-meta {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        padding-top: .5rem
+    }
+    
+    .kanban-item-meta-list {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        margin: 0 -.25rem
+    }
+    
+    .kanban-item-meta-list:last-child {
+        flex-wrap: nowrap
+    }
+    
+    .kanban-item-meta-list:first-child {
+        padding-right: 1rem
+    }
+    
+    .kanban-item-meta-list li {
+        font-size: .8125rem;
+        padding: 0 .25rem;
+        color: #8094ae
+    }
+    
+    .kanban-item-meta-list li span {
+        white-space: nowrap
+    }
+    
+    .kanban-item-meta-list li .icon+span {
+        margin-left: .25rem
+    }
+    
+    .kanban-item:hover {
+        cursor: move
+    }
+    
+    .kanban-item:last-child {
+        margin: 0
+    }
+    
+    .kanban-item.is-moving.gu-mirror {
+        transform: rotate(3deg);
+        height: auto!important
+    }
+
+    .ui-shady .kanban-board-header,.ui-softy .kanban-board-header {
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0
+    }
+    
+    .ui-shady .kanban-item,.ui-softy .kanban-item {
+        border: 0
+    }
+    
+    .ui-softy .accordion:not(.accordion-s2):not(.accordion-s3),.ui-softy .card,.ui-softy .chat-msg,.ui-softy .code-block,.ui-softy .invoice-wrap,.ui-softy .kanban-add-task,.ui-softy .kanban-board-header,.ui-softy .kanban-item,.ui-softy .nk-files-view-grid .nk-file,.ui-softy .nk-files-view-group .nk-file,.ui-softy .nk-files-view-list .nk-files-list,.ui-softy .nk-iv-scheme-item,.ui-softy .nk-iv-wg1,.ui-softy .sp-pdl-item,.ui-softy.npc-apps-inbox .nk-reply-form,.ui-softy.npc-apps-messages .nk-reply-form {
+        box-shadow: 0 1px 4px rgba(31,43,58,.15)
+    }
+    
+    .ui-softy .card .accordion:not(.accordion-s2):not(.accordion-s3) {
+        box-shadow: none;
+        border: 1px solid #dbdfea
+    }
+    
+    .ui-shady .accordion:not(.accordion-s2):not(.accordion-s3),.ui-shady .card,.ui-shady .chat-msg,.ui-shady .code-block,.ui-shady .invoice-wrap,.ui-shady .kanban-add-task,.ui-shady .kanban-board-header,.ui-shady .kanban-item,.ui-shady .nk-files-view-grid .nk-file,.ui-shady .nk-files-view-group .nk-file,.ui-shady .nk-files-view-list .nk-files-list,.ui-shady .nk-iv-scheme-item,.ui-shady .nk-iv-wg1,.ui-shady .sp-pdl-item,.ui-shady.npc-apps-inbox .nk-reply-form,.ui-shady.npc-apps-messages .nk-reply-form {
+        box-shadow: 0 0 25px -12px rgba(31,43,58,.15)
+    }
+
+{% comment %} //////////////////////////////////////// {% endcomment %}
+.card+.nk-block-head {
+    padding-top: 2.5rem
+}
+
+.nk-block-head-sm {
+    padding-bottom: 1rem
+}
+.nk-block-content+.nk-block-head-sm {
+    padding-top: 1.5rem
+}
+
+@media (min-width: 576px) {
+    .nk-block-head-lg {
+        padding-bottom:2.5rem
+    }
+
+    .nk-block-content+.nk-block-head {
+        padding-top: 4rem
+    }
+
+    .nk-block-content+.nk-block-head-sm {
+        padding-top: 2.5rem
+    }
+}
+
+@media (min-width: 768px) {
+    .nk-content-body>.nk-block-head:first-child {
+        padding-bottom:2.5rem
+    }
+
+    .nk-content-body>.nk-block-head-sm:first-child {
+        padding-bottom: 1.75rem
+    }
+
+    .nav-tabs+.nk-block {
+        padding-top: 2.5rem
+    }
+
+    .nav-tabs+.nk-block-sm {
+        padding-top: 2rem
+    }
+
+    .nav-tabs+.nk-block-xs {
+        padding-top: 1.25rem
+    }
+
+    .nk-block-text .h5,.nk-block-text .h6,.nk-block-text h5,.nk-block-text h6 {
+        font-size: 1rem
+    }
+}
+
+.nk-block+.nk-block,.nk-block+.nk-block-head {
+    padding-top: 28px
+}
+
+.nk-block+.nk-block-head-lg,.nk-block+.nk-block-lg {
+    padding-top: 2.5rem
+}
+
+.nk-block-head {
+    position: relative;
+    padding-bottom: 1.25rem
+}
+
+.nk-block-head:only-child {
+    padding-bottom: 0
+}
+
+.nk-block-head .h2:not(:last-child),.nk-block-head h2:not(:last-child) {
+    margin-bottom: 1rem
+}
+
+.nk-block-head-sub {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    margin-bottom: .5rem;
+    color: #8094ae;
+    font-weight: 400;
+    position: relative
+}
+
+.nk-block-head-sub .back-to {
+    color: inherit;
+    display: inline-flex;
+    align-items: center
+}
+
+.nk-block-head-sub .back-to .icon {
+    font-size: 1.5rem;
+    width: 2rem;
+    margin-top: -3px;
+    display: inline-block
+}
+
+.nk-block-head-sub .dropdown {
+    position: absolute;
+    right: -8px;
+    top: -6px
+}
+
+.nk-block-head-xs {
+    padding-bottom: .75rem
+}
+
+.nk-block-head-sm {
+    padding-bottom: 1rem
+}
+
+.nk-block-head-lg {
+    padding-bottom: 1.5rem
+}
+
+.nk-block-head+.nav-tabs {
+    margin-top: -1rem
+}
+
+.nk-content-body>.nk-block-head:first-child {
+    padding-bottom: 1.75rem
+}
+
+.nk-block-head .nk-block-text {
+    margin-top: 1.5rem
+}
+
+.dual-listbox .nk-block-head .nk-block-text+.dual-listbox__button,.nk-block-head .dual-listbox .nk-block-text+.dual-listbox__button,.nk-block-head .nk-block-text+.btn {
+    margin-top: 1.5rem
+}
+
+.nk-block-tools {
+    display: flex;
+    align-items: center
+}
+
+.nk-block-tools>* {
+    display: inline-flex
+}
+
+.nk-block-des {
+    color: #526484
+}
+
+.nk-block-des strong {
+    color: #364a63
+}
+
+.nk-block-des .icon {
+    vertical-align: middle
+}
+
+.nk-block-content+.nk-block-head {
+    padding-top: 2rem
+}
+
+.nk-block-content+.nk-block-head-sm {
+    padding-top: 1.5rem
+}
+
+.nk-block-content-head:not(:last-child) {
+    margin-bottom: 1rem
+}
+
+.nk-block-title-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.nk-block-title-group .title {
+    margin-bottom: 0
+}
+
+.nk-block-title-group:not(:last-child) {
+    margin-bottom: .5rem
+}
+
+@media (min-width: 576px) {
+    .nk-block-head-lg {
+        padding-bottom:2.5rem
+    }
+
+    .nk-block-content+.nk-block-head {
+        padding-top: 4rem
+    }
+
+    .nk-block-content+.nk-block-head-sm {
+        padding-top: 2.5rem
+    }
+}
+
+@media (min-width: 768px) {
+    .nk-content-body>.nk-block-head:first-child {
+        padding-bottom:2.5rem
+    }
+
+    .nk-content-body>.nk-block-head-sm:first-child {
+        padding-bottom: 1.75rem
+    }
+
+    .nav-tabs+.nk-block {
+        padding-top: 2.5rem
+    }
+
+    .nav-tabs+.nk-block-sm {
+        padding-top: 2rem
+    }
+
+    .nav-tabs+.nk-block-xs {
+        padding-top: 1.25rem
+    }
+
+    .nk-block-text .h5,.nk-block-text .h6,.nk-block-text h5,.nk-block-text h6 {
+        font-size: 1rem
+    }
+}
+
+
+.nk-content-body>.nk-block-head:first-child {
+    padding-bottom: 1.75rem
+}
+@media (min-width: 768px) {
+    .nk-content-body>.nk-block-head:first-child {
+        padding-bottom:2.5rem
+    }
+
+    .nk-content-body>.nk-block-head-sm:first-child {
+        padding-bottom: 1.75rem
+    }
+
+    .nav-tabs+.nk-block {
+        padding-top: 2.5rem
+    }
+
+    .nav-tabs+.nk-block-sm {
+        padding-top: 2rem
+    }
+
+    .nav-tabs+.nk-block-xs {
+        padding-top: 1.25rem
+    }
+
+    .nk-block-text .h5,.nk-block-text .h6,.nk-block-text h5,.nk-block-text h6 {
+        font-size: 1rem
+    }
+}
+
+.nk-block-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.nk-block-between>.title:first-child {
+    margin-bottom: 0
+}
+
+@media (min-width: 768px) {
+    .nk-block-between-md {
+        display:flex;
+        justify-content: space-between;
+        align-items: center
+    }
+}
+
+.page-title {
+    font-family: Nunito,sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700
+}
+
+@media (min-width: 992px) {
+    .page-title {
+        font-size:1.75rem
+    }
+}
+
+@media (max-width: 575.98px) {
+    .card-tools-toggle .card-title-group {
+        position:static
+    }
+
+    .card-tools-toggle .toggle-wrap .toggle-content {
+        padding: 1.25rem 1rem;
+        transform: translate(0);
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0
+    }
+
+    .card-tools-toggle .toggle-wrap .toggle-close {
+        margin-right: auto
+    }
+
+    .card-tools-toggle .toggle-wrap .toggle-close .btn-trigger:before {
+        opacity: 0
+    }
+
+    .card-tools-toggle .toggle-wrap .toggle-close .btn-trigger:hover:before {
+        opacity: 1
+    }
+}
+
+@media (min-width: 576px) {
+    .card-tools-toggle {
+        z-index:9
+    }
+
+    .card-tools-toggle .toggle-wrap .toggle {
+        display: none
+    }
+
+    .card-tools-toggle .toggle-wrap .toggle-content {
+        z-index: 9;
+        opacity: 1;
+        visibility: visible;
+        position: static;
+        background: 0 0;
+        box-shadow: none;
+        transform: translate(0)
+    }
+
+    .card-tools-toggle .toggle-wrap .toggle-close {
+        display: none
+    }
+}
+
+@media (min-width: 576px) {
+    .nk-block-tools-toggle .toggle-expand {
+        display:none
+    }
+
+    .nk-block-tools-toggle .toggle-expand-content {
+        display: block!important
+    }
+}
+
+@media (max-width: 575.98px) {
+    .nk-block-tools-toggle .toggle-expand-content {
+        position:absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        z-index: 99;
+        padding: 0 18px!important;
+        background: #fff;
+        margin-left: -18px;
+        margin-right: -18px;
+        box-shadow: 0 20px 35px rgba(0,0,0,.2)
+    }
+
+    .nk-block-tools-toggle .nk-block-tools {
+        padding-top: 20px;
+        padding-bottom: 20px
+    }
+
+    .nk-block-tools-toggle .nk-block-tools-opt {
+        margin-left: auto
+    }
+}
+
+.page-title {
+    font-family: Nunito,sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700
+}
+
+@media (min-width: 992px) {
+    .page-title {
+        font-size:1.75rem
+    }
+}
+
+@media (max-width: 575.98px) {
+    .nk-block-tools-toggle .toggle-expand-content {
+        position:absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        z-index: 99;
+        padding: 0 18px!important;
+        background: #fff;
+        margin-left: -18px;
+        margin-right: -18px;
+        box-shadow: 0 20px 35px rgba(0,0,0,.2)
+    }
+
+    .nk-block-tools-toggle .nk-block-tools {
+        padding-top: 20px;
+        padding-bottom: 20px
+    }
+
+    .nk-block-tools-toggle .nk-block-tools-opt {
+        margin-left: auto
+    }
+}
+
+.container,.container-fluid,.container-lg,.container-md,.container-sm,.container-xl,.container-xxl {
+    --bs-gutter-x: 14px;
+    --bs-gutter-y: 0;
+    width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * .5);
+    padding-left: calc(var(--bs-gutter-x) * .5);
+    margin-right: auto;
+    margin-left: auto
+}
+
+.navbar>.container,.navbar>.container-fluid,.navbar>.container-lg,.navbar>.container-md,.navbar>.container-sm,.navbar>.container-xl,.navbar>.container-xxl {
+    display: flex;
+    flex-wrap: inherit;
+    align-items: center;
+    justify-content: space-between
+}
+
+.nk-content-body {
+    flex-grow: 1
+}
+.nk-content-body>.nk-block-head:first-child {
+    padding-bottom: 1.75rem
+}
+
+@media (min-width: 768px) {
+    .nk-content-body>.nk-block-head:first-child {
+        padding-bottom:2.5rem
+    }
+
+    .nk-content-body>.nk-block-head-sm:first-child {
+        padding-bottom: 1.75rem
+    }}
+
+    .nk-kanban {
+        overflow: auto;
+        padding-bottom: 1rem
+    }
+    .badge {
+        position: relative;
+        border: 1px solid currentColor;
+        line-height: 1.125rem;
+        font-family: Roboto,sans-serif;
+        font-size: .675rem;
+        letter-spacing: .01em;
+        vertical-align: middle;
+        display: inline-flex;
+        
+    }
+
+    {% comment %} .badge {
+        --bs-badge-padding-x: 0.375rem;
+        --bs-badge-padding-y: 0;
+        --bs-badge-font-size: 0.675rem;
+        --bs-badge-font-weight: 500;
+        --bs-badge-color: #fff;
+        --bs-badge-border-radius: 3px;
+        display: inline-block;
+        padding: var(--bs-badge-padding-y) var(--bs-badge-padding-x);
+        font-size: var(--bs-badge-font-size);
+        font-weight: var(--bs-badge-font-weight);
+        line-height: 1;
+        color: var(--bs-badge-color);
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: var(--bs-badge-border-radius)
+    } {% endcomment %}
+    
+    .badge:empty {
+        display: none
+    }
+    
+    .btn .badge,.dual-listbox .dual-listbox__button .badge {
+        position: relative;
+        top: -1px
+    }
+
+    .rounded-pill {
+        border-radius: var(--bs-border-radius-pill)!important
+    }
+
+
+    .badge.rounded-pill {
+        padding-right: .5rem;
+        padding-left: .5rem
+    }
+    
+    .badge-sm {
+        padding: .3125rem .75rem;
+        font-size: .75rem
+    }
+    
+    .badge-sm.rounded-pill {
+        padding: .3125rem .875rem
+    }
+    
+    .badge-md {
+        padding: .47rem 1rem;
+        font-size: .8125rem!important
+    }
+    
+    .badge-md.rounded-pill {
+        padding: .47rem 1rem
+    }
+    
+    .badge-lg {
+        padding: .75rem 1.25rem;
+        font-size: .93rem!important
+    }
+    
+    .badge-lg.rounded-pill {
+        padding: .75rem 1.25rem
+    }
+    
+    .badge-xl {
+        padding: .875rem 1.5rem;
+        font-size: 1.125rem!important
+    }
+    
+    .badge-xl.rounded-pill {
+        padding: .875rem 1.5rem
+    }
+    
+    .badge.bg-light {
+        color: #364a63
+    }
+    
+    .badge-lighter {
+        color: #526484
+    }
+    
+    .badge .icon {
+        font-size: 1rem
+    }
+    
+    .bg-primary {
+        border-color: #6576ff
+    }
+    
+    .bg-secondary {
+        border-color: #364a63
+    }
+    
+    .bg-success {
+        border-color: #1ee0ac
+    }
+    
+    .bg-info {
+        border-color: #09c2de
+    }
+    
+    .bg-warning {
+        border-color: #f4bd0e
+    }
+    
+    .bg-danger {
+        border-color: #e85347
+    }
+    
+    .bg-light {
+        border-color: #e5e9f2
+    }
+    
+    .bg-dark {
+        border-color: #1f2b3a
+    }
+    
+    .bg-gray {
+        border-color: #8091a7
+    }
+    
+    .bg-lighter,.dual-listbox .dual-listbox__item:hover {
+        border-color: #f5f6fa
+    }
+    
+    .bg-outline-primary {
+        color: #6576ff;
+        border-color: #a3adff
+    }
+    
+    .bg-outline-secondary {
+        color: #364a63;
+        border-color: #8692a1
+    }
+    
+    .bg-outline-success {
+        color: #1ee0ac;
+        border-color: #78eccd
+    }
+    
+    .bg-outline-info {
+        color: #09c2de;
+        border-color: #6bdaeb
+    }
+    
+    .bg-outline-warning {
+        color: #f4bd0e;
+        border-color: #f8d76e
+    }
+    
+    .bg-outline-danger {
+        color: #e85347;
+        border-color: #f19891
+    }
+    
+    .bg-outline-light {
+        color: #b7c2d0;
+        border-color: #d4dae3
+    }
+    
+    .bg-outline-dark {
+        color: #1f2b3a;
+        border-color: #798089
+    }
+    
+    .bg-outline-gray {
+        color: #8091a7;
+        border-color: #b3bdca
+    }
+    
+    .bg-outline-lighter {
+        color: #e5e9f2;
+        border-color: #eff2f7
+    }
+    
+    .badge-dim.bg-primary {
+        color: #6576ff;
+        background-color: #eef0ff!important;
+        border-color: #eef0ff
+    }
+
+    .bg-outline-light {
+        color: #b7c2d0;
+        border-color: #d4dae3
+    }
+    .badge-dim.bg-outline-light {
+        color: #b7c2d0;
+        background-color: #f7f8fa;
+        border-color: #e2e7ec
+    }
+    .dark-mode .badge-dim.bg-outline-light {
+        color: #b7c2d0;
+        background-color: #2c3540;
+        border-color: #555e6a
+    }
+    .dark-mode .bg-outline-light {
+        color: #b7c2d0;
+        border-color: #344357
+    }
+
+    .text-dark {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-dark-rgb),var(--bs-text-opacity))!important
+    }
+
+    .text-primary {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-primary-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-secondary {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-secondary-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-success {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-success-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-info {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-info-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-warning {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-warning-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-danger {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-danger-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-light {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-light-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-dark {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-dark-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-gray {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-gray-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-lighter {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-lighter-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-black {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-black-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-white {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-white-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-body {
+        --bs-text-opacity: 1;
+        color: rgba(var(--bs-body-color-rgb),var(--bs-text-opacity))!important
+    }
+    
+    .text-muted {
+        --bs-text-opacity: 1;
+        color: var(--bs-secondary-color)!important
+    }
+    
+    .text-black-50 {
+        --bs-text-opacity: 1;
+        color: rgba(0,0,0,.5)!important
+    }
+    
+    .text-white-50 {
+        --bs-text-opacity: 1;
+        color: rgba(255,255,255,.5)!important
+    }
+    
+    .text-body-secondary {
+        --bs-text-opacity: 1;
+        color: var(--bs-secondary-color)!important
+    }
+    
+    .text-body-tertiary {
+        --bs-text-opacity: 1;
+        color: var(--bs-tertiary-color)!important
+    }
+    
+    .text-body-emphasis {
+        --bs-text-opacity: 1;
+        color: var(--bs-emphasis-color)!important
+    }
+    
+    .text-reset {
+        --bs-text-opacity: 1;
+        color: inherit!important
+    }
+    
+    .text-opacity-25 {
+        --bs-text-opacity: 0.25
+    }
+    
+    .text-opacity-50 {
+        --bs-text-opacity: 0.5
+    }
+    
+    .text-opacity-75 {
+        --bs-text-opacity: 0.75
+    }
+    
+    .text-opacity-100 {
+        --bs-text-opacity: 1
+    }
+
+    .kanban-title-content .title {
+        font-size: .9375rem;
+        margin-bottom: 0;
+        margin-right: .75rem;
+        color: #526484;
+    }
+    .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+        margin-top: 0;
+        margin-bottom: .5rem;
+        font-family: Nunito,sans-serif;
+        font-weight: 700;
+        line-height: 1.1;
+        color: var(--bs-heading-color);
+    }
+
+    .kanban-title-content {
+        display: flex;
+        align-items: center
+        color: #fff!important
+    }
+    
+    .kanban-title-content .title {
+        font-size: .9375rem;
+        margin-bottom: 0;
+        margin-right: .75rem;
+        color: #526484
+    }
+
+    .link-bdr-t,.link-check+.link-check,.link-list+.link-list,.link-list-opt li+li,.link-list-plain li+li,.link-tidy li+li {
+        border-top: 1px solid #e5e9f2
+    }
+    
+    .link-bdr-b {
+        border-bottom: 1px solid #e5e9f2
+    }
+    
+    .link-list-plain.sm a,.link-pd-sm,.link-tidy.sm li {
+        padding: 6px 1rem
+    }
+    
+    .link-act-check:after,.link-check li a.active:after,.link-check li.active>a:after,.link-list-opt a.active:after,.link-list-opt li.active>a:after {
+        content: "\e9bd";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 1rem;
+        font-family: Nioicon
+    }
+
+    .link-list-opt.no-bdr {
+        padding: .5rem 0
+    }
+    
+    .link-list-opt.no-bdr li:not(.divider) {
+        border-top-width: 0
+    }
+    
+    .link-list-opt .divider {
+        margin: .5rem 0
+    }
+    
+    .link-list-opt a {
+        display: flex;
+        align-items: center;
+        padding: .625rem 1.25rem;
+        font-size: 12px;
+        font-weight: 500;
+        color: #526484;
+        transition: all .4s;
+        line-height: 1.3rem;
+        position: relative
+    }
+    
+    .link-list-opt a:hover {
+        color: #6576ff;
+        background: #f5f6fa
+    }
+    
+    .link-list-opt a .icon {
+        font-size: 1.125rem;
+        width: 1.75rem;
+        opacity: .8
+    }
+    
+    .link-list-opt a.disabled,.link-list-opt li.disabled>a {
+        pointer-events: none;
+        color: #8094ae;
+        opacity: .7
+    }
+    
+    .link-list-opt .opt-head {
+        padding: .25rem 1.25rem;
+        color: #8094ae
+    }
+    
+    .link-list-opt.ui-v2 a {
+        font-weight: 400
+    }
+    
+    .link-list-opt.no-bdr+.link-check {
+        margin-top: -.75rem
+    }
+    
+    .link-list-opt.ui-colored a.active,.link-list-opt.ui-colored li.active>a {
+        color: #6576ff
+    }
+
+    .border {
+        border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important
+    }
+    
+    .border-0,.no-bdr {
+        border: 0!important
+    }
+    
+    .border-top {
+        border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important
+    }
+    
+    .border-top-0,.no-bdr-t,.no-bdr-y {
+        border-top: 0!important
+    }
+    
+    .border-end {
+        border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important
+    }
+    
+    .border-end-0,.no-bdr-r,.no-bdr-x {
+        border-right: 0!important
+    }
+    
+    .border-bottom {
+        border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important
+    }
+    
+    .border-bottom-0,.no-bdr-b,.no-bdr-y {
+        border-bottom: 0!important
+    }
+    
+    .border-start {
+        border-left: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important
+    }
+    
+    .border-start-0,.no-bdr-l,.no-bdr-x {
+        border-left: 0!important
+    }
+    
+    .border-primary {
+        --bs-border-opacity: 1;
+        border-color: rgba(var(--bs-primary-rgb),var(--bs-border-opacity))!important
+    }
+    
+    .border-secondary {
+        --bs-border-opacity: 1;
+        border-color: rgba(var(--bs-secondary-rgb),var(--bs-border-opacity))!important
+    }
+    
+    .border-success {
+        --bs-border-opacity: 1;
+        border-color: rgba(var(--bs-success-rgb),var(--bs-border-opacity))!important
+    }
+    
+    .border-info {
+        --bs-border-opacity: 1;
+        border-color: rgba(var(--bs-info-rgb),var(--bs-border-opacity))!important
+    }
+    
+    .border-warning {
+        --bs-border-opacity: 1;
+        border-color: rgba(var(--bs-warning-rgb),var(--bs-border-opacity))!important
+    }
+    
+    .border-danger {
+        --bs-border-opacity: 1;
+        border-color: rgba(var(--bs-danger-rgb),var(--bs-border-opacity))!important
+    }
+    
+    .border-light {
+        --bs-border-opacity: 1;
+        border-color: rgba(var(--bs-light-rgb),var(--bs-border-opacity))!important
+    }
+    
+    .border-dark {
+        --bs-border-opacity: 1;
+        border-color: rgba(var(--bs-dark-rgb),var(--bs-border-opacity))!important
+    }
+    
+    .border-black {
+        --bs-border-opacity: 1;
+        border-color: rgba(var(--bs-black-rgb),var(--bs-border-opacity))!important
+    }
+    
+    .border-white {
+        --bs-border-opacity: 1;
+        border-color: rgba(var(--bs-white-rgb),var(--bs-border-opacity))!important
+    }
+    
+    .border-primary-subtle {
+        border-color: var(--bs-primary-border-subtle)!important
+    }
+    
+    .border-secondary-subtle {
+        border-color: var(--bs-secondary-border-subtle)!important
+    }
+    
+    .border-success-subtle {
+        border-color: var(--bs-success-border-subtle)!important
+    }
+    
+    .border-info-subtle {
+        border-color: var(--bs-info-border-subtle)!important
+    }
+    
+    .border-warning-subtle {
+        border-color: var(--bs-warning-border-subtle)!important
+    }
+    
+    .border-danger-subtle {
+        border-color: var(--bs-danger-border-subtle)!important
+    }
+    
+    .border-light-subtle {
+        border-color: var(--bs-light-border-subtle)!important
+    }
+    
+    .border-dark-subtle {
+        border-color: var(--bs-dark-border-subtle)!important
+    }
+    
+    .border-1 {
+        border-width: 1px!important
+    }
+    
+    .border-2 {
+        border-width: 2px!important
+    }
+    
+    .border-3 {
+        border-width: 3px!important
+    }
+    
+    .border-4 {
+        border-width: 4px!important
+    }
+    
+    .border-5 {
+        border-width: 5px!important
+    }
+    
+    .border-opacity-10 {
+        --bs-border-opacity: 0.1
+    }
+    
+    .border-opacity-25 {
+        --bs-border-opacity: 0.25
+    }
+    
+    .border-opacity-50 {
+        --bs-border-opacity: 0.5
+    }
+    
+    .border-opacity-75 {
+        --bs-border-opacity: 0.75
+    }
+    
+    .border-opacity-100 {
+        --bs-border-opacity: 1
+    }
+    
+    .w-25 {
+        width: 25%!important
+    }
+    
+    .w-50 {
+        width: 50%!important
+    }
+    
+    .w-75 {
+        width: 75%!important
+    }
+    
+    .w-100 {
+        width: 100%!important
+    }
+    
+    .w-auto {
+        width: auto!important
+    }
+    
+    .mw-100 {
+        max-width: 100%!important
+    }
+    
+    .vw-100 {
+        width: 100vw!important
+    }
+    
+    .min-vw-100 {
+        min-width: 100vw!important
+    }
+    
+    .h-25 {
+        height: 25%!important
+    }
+    
+    .h-50 {
+        height: 50%!important
+    }
+    
+    .h-75 {
+        height: 75%!important
+    }
+    
+    .h-100 {
+        height: 100%!important
+    }
+    
+    .h-auto {
+        height: auto!important
+    }
+    
+    .mh-100 {
+        max-height: 100%!important
+    }
+    
+    .vh-100 {
+        height: 100vh!important
+    }
+    
+    .min-vh-100 {
+        min-height: 100vh!important
+    }
+    
+    .flex-fill {
+        flex: 1 1 auto!important
+    }
+    
+    .flex-row {
+        flex-direction: row!important
+    }
+    
+    .flex-column {
+        flex-direction: column!important
+    }
+    
+    .flex-row-reverse {
+        flex-direction: row-reverse!important
+    }
+    
+    .flex-column-reverse {
+        flex-direction: column-reverse!important
+    }
+    
+    .flex-grow-0 {
+        flex-grow: 0!important
+    }
+    
+    .flex-grow-1 {
+        flex-grow: 1!important
+    }
+    
+    .flex-shrink-0 {
+        flex-shrink: 0!important
+    }
+    
+    .flex-shrink-1 {
+        flex-shrink: 1!important
+    }
+    
+    .flex-wrap {
+        flex-wrap: wrap!important
+    }
+    
+    .flex-nowrap {
+        flex-wrap: nowrap!important
+    }
+    
+    .flex-wrap-reverse {
+        flex-wrap: wrap-reverse!important
+    }
+    
+    .justify-content-start,.justify-start {
+        justify-content: flex-start!important
+    }
+    
+    .justify-content-end,.justify-end {
+        justify-content: flex-end!important
+    }
+    
+    .center,.justify-center,.justify-content-center {
+        justify-content: center!important
+    }
+    
+    .between-center,.between-start,.justify-between,.justify-content-between {
+        justify-content: space-between!important
+    }
+    
+    .justify-around,.justify-content-around {
+        justify-content: space-around!important
+    }
+    
+    .justify-content-evenly {
+        justify-content: space-evenly!important
+    }
+    
+    .align-items-start,.align-start,.between-start {
+        align-items: flex-start!important
+    }
+    
+    .align-end,.align-items-end {
+        align-items: flex-end!important
+    }
+    
+    .align-center,.align-items-center,.between-center,.center {
+        align-items: center!important
+    }
+    
+    .align-items-baseline {
+        align-items: baseline!important
+    }
+    
+    .align-items-stretch,.stretch {
+        align-items: stretch!important
+    }
+    
+    .align-content-start {
+        align-content: flex-start!important
+    }
+    
+    .align-content-end {
+        align-content: flex-end!important
+    }
+    
+    .align-content-center {
+        align-content: center!important
+    }
+    
+    .align-content-between {
+        align-content: space-between!important
+    }
+    
+    .align-content-around {
+        align-content: space-around!important
+    }
+    
+    .align-content-stretch {
+        align-content: stretch!important
+    }
+    
+    .align-self-auto {
+        align-self: auto!important
+    }
+    
+    .align-self-start {
+        align-self: flex-start!important
+    }
+    
+    .align-self-end {
+        align-self: flex-end!important
+    }
+    
+    .align-self-center {
+        align-self: center!important
+    }
+    
+    .align-self-baseline {
+        align-self: baseline!important
+    }
+    
+    .align-self-stretch {
+        align-self: stretch!important
+    }
+    
+    .order-first {
+        order: -1!important
+    }
+    
+    .order-0 {
+        order: 0!important
+    }
+    
+    .order-1 {
+        order: 1!important
+    }
+    
+    .order-2 {
+        order: 2!important
+    }
+    
+    .order-3 {
+        order: 3!important
+    }
+    
+    .order-4 {
+        order: 4!important
+    }
+    
+    .order-5 {
+        order: 5!important
+    }
+    
+    .order-last {
+        order: 6!important
+    }
+    
+    .m-0 {
+        margin: 0!important
+    }
+    
+    .m-1 {
+        margin: .375rem!important
+    }
+    
+    .m-2 {
+        margin: .75rem!important
+    }
+    
+    .m-3 {
+        margin: 1rem!important
+    }
+    
+    .m-4 {
+        margin: 1.5rem!important
+    }
+    
+    .m-5 {
+        margin: 2.75rem!important
+    }
+    
+    .m-gs {
+        margin: 28px!important
+    }
+    
+    .m-auto {
+        margin: auto!important
+    }
+    
+    .mx-0 {
+        margin-right: 0!important;
+        margin-left: 0!important
+    }
+    
+    .mx-1 {
+        margin-right: .375rem!important;
+        margin-left: .375rem!important
+    }
+    
+    .mx-2 {
+        margin-right: .75rem!important;
+        margin-left: .75rem!important
+    }
+    
+    .mx-3 {
+        margin-right: 1rem!important;
+        margin-left: 1rem!important
+    }
+    
+    .mx-4 {
+        margin-right: 1.5rem!important;
+        margin-left: 1.5rem!important
+    }
+    
+    .mx-5 {
+        margin-right: 2.75rem!important;
+        margin-left: 2.75rem!important
+    }
+    
+    .mx-gs {
+        margin-right: 28px!important;
+        margin-left: 28px!important
+    }
+    
+    .mx-auto {
+        margin-right: auto!important;
+        margin-left: auto!important
+    }
+    
+    .my-0 {
+        margin-top: 0!important;
+        margin-bottom: 0!important
+    }
+    
+    .my-1 {
+        margin-top: .375rem!important;
+        margin-bottom: .375rem!important
+    }
+    
+    .my-2 {
+        margin-top: .75rem!important;
+        margin-bottom: .75rem!important
+    }
+    
+    .my-3 {
+        margin-top: 1rem!important;
+        margin-bottom: 1rem!important
+    }
+    
+    .my-4 {
+        margin-top: 1.5rem!important;
+        margin-bottom: 1.5rem!important
+    }
+    
+    .my-5 {
+        margin-top: 2.75rem!important;
+        margin-bottom: 2.75rem!important
+    }
+    
+    .my-gs {
+        margin-top: 28px!important;
+        margin-bottom: 28px!important
+    }
+    
+    .my-auto {
+        margin-top: auto!important;
+        margin-bottom: auto!important
+    }
+    
+    .mt-0 {
+        margin-top: 0!important
+    }
+    
+    .mt-1 {
+        margin-top: .375rem!important
+    }
+    
+    .mt-2 {
+        margin-top: .75rem!important
+    }
+    
+    .mt-3 {
+        margin-top: 1rem!important
+    }
+    
+    .mt-4 {
+        margin-top: 1.5rem!important
+    }
+    
+    .mt-5 {
+        margin-top: 2.75rem!important
+    }
+    
+    .mt-gs {
+        margin-top: 28px!important
+    }
+    
+    .mt-auto {
+        margin-top: auto!important
+    }
+    
+    .me-0 {
+        margin-right: 0!important
+    }
+    
+    .me-1 {
+        margin-right: .375rem!important
+    }
+    
+    .me-2 {
+        margin-right: .75rem!important
+    }
+    
+    .me-3 {
+        margin-right: 1rem!important
+    }
+    
+    .me-4 {
+        margin-right: 1.5rem!important
+    }
+    
+    .me-5 {
+        margin-right: 2.75rem!important
+    }
+    
+    .me-gs {
+        margin-right: 28px!important
+    }
+    
+    .me-auto {
+        margin-right: auto!important
+    }
+    
+    .mb-0 {
+        margin-bottom: 0!important
+    }
+    
+    .mb-1 {
+        margin-bottom: .375rem!important
+    }
+    
+    .mb-2 {
+        margin-bottom: .75rem!important
+    }
+    
+    .mb-3 {
+        margin-bottom: 1rem!important
+    }
+    
+    .mb-4 {
+        margin-bottom: 1.5rem!important
+    }
+    
+    .mb-5 {
+        margin-bottom: 2.75rem!important
+    }
+    
+    .mb-gs {
+        margin-bottom: 28px!important
+    }
+    
+    .mb-auto {
+        margin-bottom: auto!important
+    }
+    
+    .ms-0 {
+        margin-left: 0!important
+    }
+    
+    .ms-1 {
+        margin-left: .375rem!important
+    }
+    
+    .ms-2 {
+        margin-left: .75rem!important
+    }
+    
+    .ms-3 {
+        margin-left: 1rem!important
+    }
+    
+    .ms-4 {
+        margin-left: 1.5rem!important
+    }
+    
+    .ms-5 {
+        margin-left: 2.75rem!important
+    }
+    
+    .ms-gs {
+        margin-left: 28px!important
+    }
+    
+    .ms-auto {
+        margin-left: auto!important
+    }
+    
+    .m-n1 {
+        margin: -.375rem!important
+    }
+    
+    .m-n2 {
+        margin: -.75rem!important
+    }
+    
+    .m-n3 {
+        margin: -1rem!important
+    }
+    
+    .m-n4 {
+        margin: -1.5rem!important
+    }
+    
+    .m-n5 {
+        margin: -2.75rem!important
+    }
+    
+    .m-ngs {
+        margin: -28px!important
+    }
+    
+    .mx-n1 {
+        margin-right: -.375rem!important;
+        margin-left: -.375rem!important
+    }
+    
+    .mx-n2 {
+        margin-right: -.75rem!important;
+        margin-left: -.75rem!important
+    }
+    
+    .mx-n3 {
+        margin-right: -1rem!important;
+        margin-left: -1rem!important
+    }
+    
+    .mx-n4 {
+        margin-right: -1.5rem!important;
+        margin-left: -1.5rem!important
+    }
+    
+    .mx-n5 {
+        margin-right: -2.75rem!important;
+        margin-left: -2.75rem!important
+    }
+    
+    .mx-ngs {
+        margin-right: -28px!important;
+        margin-left: -28px!important
+    }
+    
+    .my-n1 {
+        margin-top: -.375rem!important;
+        margin-bottom: -.375rem!important
+    }
+    
+    .my-n2 {
+        margin-top: -.75rem!important;
+        margin-bottom: -.75rem!important
+    }
+    
+    .my-n3 {
+        margin-top: -1rem!important;
+        margin-bottom: -1rem!important
+    }
+    
+    .my-n4 {
+        margin-top: -1.5rem!important;
+        margin-bottom: -1.5rem!important
+    }
+    
+    .my-n5 {
+        margin-top: -2.75rem!important;
+        margin-bottom: -2.75rem!important
+    }
+    
+    .my-ngs {
+        margin-top: -28px!important;
+        margin-bottom: -28px!important
+    }
+    
+    .mt-n1 {
+        margin-top: -.375rem!important
+    }
+    
+    .mt-n2 {
+        margin-top: -.75rem!important
+    }
+    
+    .mt-n3 {
+        margin-top: -1rem!important
+    }
+    
+    .mt-n4 {
+        margin-top: -1.5rem!important
+    }
+    
+    .mt-n5 {
+        margin-top: -2.75rem!important
+    }
+    
+    .mt-ngs {
+        margin-top: -28px!important
+    }
+    
+    .me-n1 {
+        margin-right: -.375rem!important
+    }
+    
+    .me-n2 {
+        margin-right: -.75rem!important
+    }
+    
+    .me-n3 {
+        margin-right: -1rem!important
+    }
+    
+    .me-n4 {
+        margin-right: -1.5rem!important
+    }
+    
+    .me-n5 {
+        margin-right: -2.75rem!important
+    }
+    
+    .me-ngs {
+        margin-right: -28px!important
+    }
+    
+    .mb-n1 {
+        margin-bottom: -.375rem!important
+    }
+    
+    .mb-n2 {
+        margin-bottom: -.75rem!important
+    }
+    
+    .mb-n3 {
+        margin-bottom: -1rem!important
+    }
+    
+    .mb-n4 {
+        margin-bottom: -1.5rem!important
+    }
+
+    li {
+        list-style: none;
+    }
+
+    ol,ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .user-avatar-group {
+        display: flex
+    }
+    
+    .user-avatar-group .user-avatar {
+        border: 2px solid #fff
+    }
+    
+    .user-avatar-group .user-avatar:not(:first-child) {
+        margin-left: -20%
+    }
+    
+    .user-avatar-group .user-avatar.sm:not(:first-child) {
+        margin-left: -1rem
+    }
+    
+    .user-avatar-group .user-avatar.xs:not(:first-child) {
+        margin-left: -.5rem
+    }
+    
+
+    .dual-listbox .input-group:not(.has-validation)>.form-floating:not(:last-child)>.dual-listbox__search,.input-group:not(.has-validation)>.dropdown-toggle:nth-last-child(n+3),.input-group:not(.has-validation)>.form-floating:not(:last-child)>.form-control,.input-group:not(.has-validation)>.form-floating:not(:last-child)>.form-select,.input-group:not(.has-validation)>:not(:last-child):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating),div.dataTables_wrapper div.dataTables_filter .input-group:not(.has-validation)>.form-floating:not(:last-child)>input {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0
+    }
+    
+    .dual-listbox .input-group.has-validation>.form-floating:nth-last-child(n+3)>.dual-listbox__search,.input-group.has-validation>.dropdown-toggle:nth-last-child(n+4),.input-group.has-validation>.form-floating:nth-last-child(n+3)>.form-control,.input-group.has-validation>.form-floating:nth-last-child(n+3)>.form-select,.input-group.has-validation>:nth-last-child(n+3):not(.dropdown-toggle):not(.dropdown-menu):not(.form-floating),div.dataTables_wrapper div.dataTables_filter .input-group.has-validation>.form-floating:nth-last-child(n+3)>input {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0
+    }
+
+    .dropdown-toggle {
+        white-space: nowrap
+    }
+    
+    .dropdown-toggle::after {
+        display: inline-block;
+        margin-left: .255em;
+        vertical-align: .255em;
+        content: "";
+        border-top: .3em solid;
+        border-right: .3em solid transparent;
+        border-bottom: 0;
+        border-left: .3em solid transparent
+    }
+    
+    .dropdown-toggle:empty::after {
+        margin-left: 0
+    }
+    
+    .dropdown-menu {
+        --bs-dropdown-zindex: 1000;
+        --bs-dropdown-min-width: 180px;
+        --bs-dropdown-padding-x: 0;
+        --bs-dropdown-padding-y: 0;
+        --bs-dropdown-spacer: 0.125rem;
+        --bs-dropdown-font-size: 0.8125rem;
+        --bs-dropdown-color: #526484;
+        --bs-dropdown-bg: #fff;
+        --bs-dropdown-border-color: #e5e9f2;
+        --bs-dropdown-border-radius: 4px;
+        --bs-dropdown-border-width: 1px;
+        --bs-dropdown-inner-border-radius: calc(4px - 1px);
+        --bs-dropdown-divider-bg: #e5e9f2;
+        --bs-dropdown-divider-margin-y: 12px;
+        --bs-dropdown-box-shadow: 0 3px 12px 1px rgba(44, 55, 130, 0.15);
+        --bs-dropdown-link-color: #364a63;
+        --bs-dropdown-link-hover-color: #6576ff;
+        --bs-dropdown-link-hover-bg: #ebeef2;
+        --bs-dropdown-link-active-color: #6576ff;
+        --bs-dropdown-link-active-bg: #dbdfea;
+        --bs-dropdown-link-disabled-color: #ebeef2;
+        --bs-dropdown-item-padding-x: 14px;
+        --bs-dropdown-item-padding-y: 8px;
+        --bs-dropdown-header-color: #8091a7;
+        --bs-dropdown-header-padding-x: 14px;
+        --bs-dropdown-header-padding-y: 0;
+        position: absolute;
+        z-index: var(--bs-dropdown-zindex);
+        display: none;
+        min-width: var(--bs-dropdown-min-width);
+        padding: var(--bs-dropdown-padding-y) var(--bs-dropdown-padding-x);
+        margin: 0;
+        font-size: var(--bs-dropdown-font-size);
+        color: var(--bs-dropdown-color);
+        text-align: left;
+        list-style: none;
+        background-color: var(--bs-dropdown-bg);
+        background-clip: padding-box;
+        border: var(--bs-dropdown-border-width) solid var(--bs-dropdown-border-color);
+        border-radius: var(--bs-dropdown-border-radius)
+    }
+    
+    .dropdown-menu[data-bs-popper] {
+        top: 100%;
+        left: 0;
+        margin-top: var(--bs-dropdown-spacer)
+    }
+    
+    .dropdown-menu>.dropdown-item:first-child,.dropdown-menu>li:first-child .dropdown-item {
+        border-top-left-radius: var(--bs-dropdown-inner-border-radius);
+        border-top-right-radius: var(--bs-dropdown-inner-border-radius)
+    }
+    
+    .dropdown-menu>.dropdown-item:last-child,.dropdown-menu>li:last-child .dropdown-item {
+        border-bottom-right-radius: var(--bs-dropdown-inner-border-radius);
+        border-bottom-left-radius: var(--bs-dropdown-inner-border-radius)
+    }
+    
+    .dropdown-menu-start {
+        --bs-position: start
+    }
+    
+    .dropdown-menu-start[data-bs-popper] {
+        right: auto;
+        left: 0
+    }
+    
+    .dropdown-menu-end {
+        --bs-position: end
+    }
+    
+    .dropdown-menu-end[data-bs-popper] {
+        right: 0;
+        left: auto
+    }
+    
+    @media (min-width: 576px) {
+        .dropdown-menu-sm-start {
+            --bs-position:start
+        }
+    
+        .dropdown-menu-sm-start[data-bs-popper] {
+            right: auto;
+            left: 0
+        }
+    
+        .dropdown-menu-sm-end {
+            --bs-position: end
+        }
+    
+        .dropdown-menu-sm-end[data-bs-popper] {
+            right: 0;
+            left: auto
+        }
+    }
+    
+    @media (min-width: 768px) {
+        .dropdown-menu-md-start {
+            --bs-position:start
+        }
+    
+        .dropdown-menu-md-start[data-bs-popper] {
+            right: auto;
+            left: 0
+        }
+    
+        .dropdown-menu-md-end {
+            --bs-position: end
+        }
+    
+        .dropdown-menu-md-end[data-bs-popper] {
+            right: 0;
+            left: auto
+        }
+    }
+    
+    @media (min-width: 992px) {
+        .dropdown-menu-lg-start {
+            --bs-position:start
+        }
+    
+        .dropdown-menu-lg-start[data-bs-popper] {
+            right: auto;
+            left: 0
+        }
+    
+        .dropdown-menu-lg-end {
+            --bs-position: end
+        }
+    
+        .dropdown-menu-lg-end[data-bs-popper] {
+            right: 0;
+            left: auto
+        }
+    }
+    
+    @media (min-width: 1200px) {
+        .dropdown-menu-xl-start {
+            --bs-position:start
+        }
+    
+        .dropdown-menu-xl-start[data-bs-popper] {
+            right: auto;
+            left: 0
+        }
+    
+        .dropdown-menu-xl-end {
+            --bs-position: end
+        }
+    
+        .dropdown-menu-xl-end[data-bs-popper] {
+            right: 0;
+            left: auto
+        }
+    }
+    
+    @media (min-width: 1540px) {
+        .dropdown-menu-xxl-start {
+            --bs-position:start
+        }
+    
+        .dropdown-menu-xxl-start[data-bs-popper] {
+            right: auto;
+            left: 0
+        }
+    
+        .dropdown-menu-xxl-end {
+            --bs-position: end
+        }
+    
+        .dropdown-menu-xxl-end[data-bs-popper] {
+            right: 0;
+            left: auto
+        }
+    }
+    
+    .dropup .dropdown-menu[data-bs-popper] {
+        top: auto;
+        bottom: 100%;
+        margin-top: 0;
+        margin-bottom: var(--bs-dropdown-spacer)
+    }
+    
+    .dropup .dropdown-toggle::after {
+        display: inline-block;
+        margin-left: .255em;
+        vertical-align: .255em;
+        content: "";
+        border-top: 0;
+        border-right: .3em solid transparent;
+        border-bottom: .3em solid;
+        border-left: .3em solid transparent
+    }
+    
+    .dropup .dropdown-toggle:empty::after {
+        margin-left: 0
+    }
+    
+    .dropend .dropdown-menu[data-bs-popper] {
+        top: 0;
+        right: auto;
+        left: 100%;
+        margin-top: 0;
+        margin-left: var(--bs-dropdown-spacer)
+    }
+    
+    .dropend .dropdown-toggle::after {
+        display: inline-block;
+        margin-left: .255em;
+        vertical-align: .255em;
+        content: "";
+        border-top: .3em solid transparent;
+        border-right: 0;
+        border-bottom: .3em solid transparent;
+        border-left: .3em solid
+    }
+    
+    .dropend .dropdown-toggle:empty::after {
+        margin-left: 0
+    }
+    
+    .dropend .dropdown-toggle::after {
+        vertical-align: 0
+    }
+    
+    .dropstart .dropdown-menu[data-bs-popper] {
+        top: 0;
+        right: 100%;
+        left: auto;
+        margin-top: 0;
+        margin-right: var(--bs-dropdown-spacer)
+    }
+    
+    .dropstart .dropdown-toggle::after {
+        display: inline-block;
+        margin-left: .255em;
+        vertical-align: .255em;
+        content: ""
+    }
+    
+    .dropstart .dropdown-toggle::after {
+        display: none
+    }
+    
+    .dropstart .dropdown-toggle::before {
+        display: inline-block;
+        margin-right: .255em;
+        vertical-align: .255em;
+        content: "";
+        border-top: .3em solid transparent;
+        border-right: .3em solid;
+        border-bottom: .3em solid transparent
+    }
+    
+    .dropstart .dropdown-toggle:empty::after {
+        margin-left: 0
+    }
+    
+    .dropstart .dropdown-toggle::before {
+        vertical-align: 0
+    }
+    
+    .dropdown-divider {
+        height: 0;
+        margin: var(--bs-dropdown-divider-margin-y) 0;
+        overflow: hidden;
+        border-top: 1px solid var(--bs-dropdown-divider-bg);
+        opacity: 1
+    }
+    
+    .dropdown-item {
+        display: block;
+        width: 100%;
+        padding: var(--bs-dropdown-item-padding-y) var(--bs-dropdown-item-padding-x);
+        clear: both;
+        font-weight: 400;
+        color: var(--bs-dropdown-link-color);
+        text-align: inherit;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+        border-radius: var(--bs-dropdown-item-border-radius,0)
+    }
+    
+    .dropdown-item:focus,.dropdown-item:hover {
+        color: var(--bs-dropdown-link-hover-color);
+        background-color: var(--bs-dropdown-link-hover-bg)
+    }
+    
+    .dropdown-item.active,.dropdown-item:active {
+        color: var(--bs-dropdown-link-active-color);
+        text-decoration: none;
+        background-color: var(--bs-dropdown-link-active-bg)
+    }
+    
+    .dropdown-item.disabled,.dropdown-item:disabled {
+        color: var(--bs-dropdown-link-disabled-color);
+        pointer-events: none;
+        background-color: transparent
+    }
+    
+    .dropdown-menu.show {
+        display: block
+    }
+    
+    .dropdown-header {
+        display: block;
+        padding: var(--bs-dropdown-header-padding-y) var(--bs-dropdown-header-padding-x);
+        margin-bottom: 0;
+        font-size: .75rem;
+        color: var(--bs-dropdown-header-color);
+        white-space: nowrap
+    }
+    
+    .dropdown-item-text {
+        display: block;
+        padding: var(--bs-dropdown-item-padding-y) var(--bs-dropdown-item-padding-x);
+        color: var(--bs-dropdown-link-color)
+    }
+    
+    .dropdown-menu-dark {
+        --bs-dropdown-color: #dee2e6;
+        --bs-dropdown-bg: #343a40;
+        --bs-dropdown-border-color: #e5e9f2;
+        --bs-dropdown-link-color: #dee2e6;
+        --bs-dropdown-link-hover-color: #fff;
+        --bs-dropdown-divider-bg: #e5e9f2;
+        --bs-dropdown-link-hover-bg: rgba(255, 255, 255, 0.15);
+        --bs-dropdown-link-active-color: #6576ff;
+        --bs-dropdown-link-active-bg: #dbdfea;
+        --bs-dropdown-link-disabled-color: #adb5bd;
+        --bs-dropdown-header-color: #adb5bd
+    }
+    
+    .btn-group,.btn-group-vertical {
+        position: relative;
+        display: inline-flex;
+        vertical-align: middle
+    }
+    
+    .btn-group-vertical>.btn,.btn-group>.btn,.dual-listbox .btn-group-vertical>.dual-listbox__button,.dual-listbox .btn-group>.dual-listbox__button {
+        position: relative;
+        flex: 1 1 auto
+    }
+    
+    .btn-group-vertical>.btn-check:checked+.btn,.btn-group-vertical>.btn-check:focus+.btn,.btn-group-vertical>.btn.active,.btn-group-vertical>.btn:active,.btn-group-vertical>.btn:focus,.btn-group-vertical>.btn:hover,.btn-group>.btn-check:checked+.btn,.btn-group>.btn-check:focus+.btn,.btn-group>.btn.active,.btn-group>.btn:active,.btn-group>.btn:focus,.btn-group>.btn:hover,.dual-listbox .btn-group-vertical>.active.dual-listbox__button,.dual-listbox .btn-group-vertical>.btn-check:checked+.dual-listbox__button,.dual-listbox .btn-group-vertical>.btn-check:focus+.dual-listbox__button,.dual-listbox .btn-group-vertical>.dual-listbox__button:active,.dual-listbox .btn-group-vertical>.dual-listbox__button:focus,.dual-listbox .btn-group-vertical>.dual-listbox__button:hover,.dual-listbox .btn-group>.active.dual-listbox__button,.dual-listbox .btn-group>.btn-check:checked+.dual-listbox__button,.dual-listbox .btn-group>.btn-check:focus+.dual-listbox__button,.dual-listbox .btn-group>.dual-listbox__button:active,.dual-listbox .btn-group>.dual-listbox__button:focus,.dual-listbox .btn-group>.dual-listbox__button:hover {
+        z-index: 1
+    }
+    
+    .btn-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start
+    }
+    
+    .btn-toolbar .input-group {
+        width: auto
+    }
+    
+    .btn-group {
+        border-radius: 4px
+    }
+    
+    .btn-group>.btn-group:not(:first-child),.btn-group>:not(.btn-check:first-child)+.btn,.dual-listbox .btn-group>:not(.btn-check:first-child)+.dual-listbox__button {
+        margin-left: calc(1px * -1)
+    }
+    
+    .btn-group>.btn-group:not(:last-child)>.btn,.btn-group>.btn.dropdown-toggle-split:first-child,.btn-group>.btn:not(:last-child):not(.dropdown-toggle),.dual-listbox .btn-group>.btn-group:not(:last-child)>.dual-listbox__button,.dual-listbox .btn-group>.dropdown-toggle-split.dual-listbox__button:first-child,.dual-listbox .btn-group>.dual-listbox__button:not(:last-child):not(.dropdown-toggle) {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0
+    }
+    
+    .btn-group>.btn-group:not(:first-child)>.btn,.btn-group>.btn:nth-child(n+3),.btn-group>:not(.btn-check)+.btn,.dual-listbox .btn-group>.btn-group:not(:first-child)>.dual-listbox__button,.dual-listbox .btn-group>.dual-listbox__button:nth-child(n+3),.dual-listbox .btn-group>:not(.btn-check)+.dual-listbox__button {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0
+    }
+    
+    .dropdown-toggle-split {
+        padding-right: .84375rem;
+        padding-left: .84375rem
+    }
+    
+    .dropdown-toggle-split::after,.dropend .dropdown-toggle-split::after,.dropup .dropdown-toggle-split::after {
+        margin-left: 0
+    }
+    
+    .dropstart .dropdown-toggle-split::before {
+        margin-right: 0
+    }
+    
+    .btn-group-sm>.btn+.dropdown-toggle-split,.btn-sm+.dropdown-toggle-split,.dual-listbox .btn-group-sm>.dual-listbox__button+.dropdown-toggle-split {
+        padding-right: .5625rem;
+        padding-left: .5625rem
+    }
+    
+    .btn-group-lg>.btn+.dropdown-toggle-split,.btn-lg+.dropdown-toggle-split,.dual-listbox .btn-group-lg>.dual-listbox__button+.dropdown-toggle-split {
+        padding-right: 1.125rem;
+        padding-left: 1.125rem
+    }
+    
+    .btn-group-vertical {
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center
+    }
+    
+    .btn-group-vertical>.btn,.btn-group-vertical>.btn-group,.dual-listbox .btn-group-vertical>.dual-listbox__button {
+        width: 100%
+    }
+    
+    .btn-group-vertical>.btn-group:not(:first-child),.btn-group-vertical>.btn:not(:first-child),.dual-listbox .btn-group-vertical>.dual-listbox__button:not(:first-child) {
+        margin-top: calc(1px * -1)
+    }
+    
+    .btn-group-vertical>.btn-group:not(:last-child)>.btn,.btn-group-vertical>.btn:not(:last-child):not(.dropdown-toggle),.dual-listbox .btn-group-vertical>.btn-group:not(:last-child)>.dual-listbox__button,.dual-listbox .btn-group-vertical>.dual-listbox__button:not(:last-child):not(.dropdown-toggle) {
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0
+    }
+
+    .user-avatar,[class^=user-avatar]:not([class*=-group]) {
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        background: #798bff;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: .06em;
+        flex-shrink: 0;
+        position: relative
+    }
+    
+    .user-avatar+.user-info,[class^=user-avatar]:not([class*=-group])+.user-info {
+        margin-left: 1rem
+    }
+    
+    .user-avatar+.user-name,[class^=user-avatar]:not([class*=-group])+.user-name {
+        margin-left: .75rem
+    }
+    
+    .user-avatar img,[class^=user-avatar]:not([class*=-group]) img {
+        border-radius: 50%
+    }
+    
+    .user-avatar.md+.user-info,[class^=user-avatar]:not([class*=-group]).md+.user-info {
+        margin-left: 1.5rem
+    }
+    
+    .user-avatar.md+.user-name,[class^=user-avatar]:not([class*=-group]).md+.user-name {
+        margin-left: 1.25rem
+    }
+    
+    .user-avatar .edit,[class^=user-avatar]:not([class*=-group]) .edit {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: 50%;
+        background-color: rgba(31,43,58,.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        opacity: 0;
+        transition: opacity .3s
+    }
+    
+    .user-avatar:hover .edit,[class^=user-avatar]:not([class*=-group]):hover .edit {
+        opacity: 1
+    }
+    
+    .user-avatar .status,[class^=user-avatar]:not([class*=-group]) .status {
+        border: 2px solid #fff;
+        position: absolute;
+        bottom: 0;
+        right: 0
+    }
+    
+    .user-avatar.sq,[class^=user-avatar]:not([class*=-group]).sq {
+        border-radius: 4px
+    }
+    
+    .user-avatar.sq img,[class^=user-avatar]:not([class*=-group]).sq img {
+        border-radius: 4px
+    }
+    
+    .user-avatar.sq .status,[class^=user-avatar]:not([class*=-group]).sq .status {
+        bottom: -6px;
+        right: -6px
+    }
+    
+    .user-avatar-multiple {
+        background-color: transparent!important
+    }
+    
+    .user-avatar-multiple .user-avatar {
+        position: absolute;
+        height: 70%;
+        width: 70%;
+        font-size: 80%;
+        border: 2px solid #fff
+    }
+    
+    .user-avatar-multiple .user-avatar:nth-child(1) {
+        top: 0;
+        right: 0
+    }
+    
+    .user-avatar-multiple .user-avatar:nth-child(2) {
+        bottom: 0;
+        left: 0
+    }
+    
+    .user-avatar-multiple .user-avatar:nth-child(n+3) {
+        display: none
+    }
+    
+    .user-card .user-avatar.d-none {
+        margin-right: 1rem
+    }
+    
+    .user-card .user-avatar.d-none+.user-info,.user-card .user-avatar.d-none+.user-name {
+        margin-left: 0
+    }
+    
+    .user-avatar-xl,.user-avatar.xl {
+        height: 110px;
+        width: 110px;
+        font-size: 40px;
+        font-weight: 400
+    }
+    
+    .user-avatar-xl .status,.user-avatar.xl .status {
+        bottom: 9px;
+        right: 9px
+    }
+    
+    .user-avatar-lg,.user-avatar.lg {
+        height: 80px;
+        width: 80px;
+        font-size: 28px;
+        font-weight: 400
+    }
+    
+    .user-avatar-lg .status,.user-avatar.lg .status {
+        bottom: 5px;
+        right: 5px
+    }
+    
+    .user-avatar-md,.user-avatar.md {
+        height: 60px;
+        width: 60px;
+        font-size: 18px
+    }
+    
+    .user-avatar-md .status,.user-avatar.md .status {
+        bottom: 2px;
+        right: 2px
+    }
+    
+    .user-avatar-sm,.user-avatar.sm {
+        height: 32px;
+        width: 32px;
+        font-size: 12px
+    }
+    
+    .user-avatar-sm .status,.user-avatar.sm .status {
+        bottom: -2px;
+        right: -2px
+    }
+    
+    .user-avatar-xs,.user-avatar.xs {
+        height: 26px;
+        width: 26px;
+        font-size: 9px;
+        font-weight: 700
+    }
+    
+    .user-avatar-xs .status,.user-avatar.xs .status {
+        bottom: -2px;
+        right: -2px
+    }
+    
+    .user-avatar[class*=-blue-dim] {
+        color: #559bfb
+    }
+    
+    .user-avatar[class*=-azure-dim] {
+        color: #1676fb
+    }
+    
+    .user-avatar[class*=-indigo-dim] {
+        color: #2c3782
+    }
+    
+    .user-avatar[class*=-purple-dim] {
+        color: #816bff
+    }
+    
+    .user-avatar[class*=-pink-dim] {
+        color: #ff63a5
+    }
+    
+    .user-avatar[class*=-orange-dim] {
+        color: #ffa353
+    }
+    
+    .user-avatar[class*=-teal-dim] {
+        color: #20c997
+    }
+    
+    .user-avatar[class*=-primary-dim] {
+        color: #6576ff
+    }
+    
+    .user-avatar[class*=-secondary-dim] {
+        color: #364a63
+    }
+    
+    .user-avatar[class*=-success-dim] {
+        color: #1ee0ac
+    }
+    
+    .user-avatar[class*=-info-dim] {
+        color: #09c2de
+    }
+    
+    .user-avatar[class*=-warning-dim] {
+        color: #f4bd0e
+    }
+    
+    .user-avatar[class*=-danger-dim] {
+        color: #e85347
+    }
+    
+    .user-avatar[class*=-dark-dim] {
+        color: #1f2b3a
+    }
+    
+    .user-avatar[class*=-gray-dim] {
+        color: #8091a7
+    }
+    
+    .user-avatar[class*=-lighter] {
+        color: #8094ae
+    }
+    
+    .user-avatar[class*=-light] {
+        color: #526484
+    }
+    
+    .user-card-s2 .user-avatar {
+        margin: 0 auto
+    }
+    .user-avatar-group {
+        display: flex
+    }
+    
+    .user-avatar-group .user-avatar {
+        border: 2px solid #fff
+    }
+    
+    .user-avatar-group .user-avatar:not(:first-child) {
+        margin-left: -20%
+    }
+    
+    .user-avatar-group .user-avatar.sm:not(:first-child) {
+        margin-left: -1rem
+    }
+    
+    .user-avatar-group .user-avatar.xs:not(:first-child) {
+        margin-left: -.5rem
+    }
+    .project-title .user-avatar {
+        margin-right: 1rem
+    }
+    .nk-ibx-item-user .user-avatar {
+        height: 28px;
+        width: 28px;
+        font-size: 12px
+    }
+
+    .fav-list a:hover>.user-avatar:after {
+        opacity: 1
+    }
+    
+    .fav-list .user-avatar {
+        height: 44px;
+        width: 44px
+    }
+    
+    .fav-list .user-avatar:after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        left: 0;
+        height: 100%;
+        background: #e5e9f2;
+        transform: scale(1.15);
+        opacity: 0;
+        border-radius: 50%;
+        z-index: -1;
+        transition: opacity .3s
+    }
+    .nk-chat-aside-user .user-avatar {
+        height: 36px;
+        width: 36px
+    }
+    
+    .nk-chat-aside-user .user-avatar+.title {
+        margin-left: 1rem
+    }
+    .nk-chat-head-info .user-avatar+.user-info {
+        margin-left: .75rem
+    }
+    @media (max-width: 575.98px) {
+        .nk-chat {
+            border:none;
+            border-radius: 4px;
+            min-height: calc(100vh - (65px + 85px));
+            max-height: calc(100vh - (65px + 85px));
+            margin: -24px -18px
+        }
+    
+        .nk-chat-head {
+            padding: .75rem 1.25rem
+        }
+    
+        .nk-chat-head-user {
+            max-width: calc(100% - 34px)
+        }
+    
+        .nk-chat-head-user .user-avatar {
+            height: 36px;
+            width: 36px
+        }
+    
+        .nk-chat-head-user .user-info {
+            width: calc(100% - 36px - .75rem)
+        }
+    }
+
+    .dark-mode .icon[class*=bg-light],.dark-mode .icon[class*=bg-secondary-dim],.dark-mode .text-secondary,.dark-mode .user-avatar[class*=-light] {
+        color: #8094ae!important
+    }
+    
+    .dark-mode .text-dark {
+        color: #fff!important
+    }
+    
+    .dark-mode .text-muted {
+        color: #8094ae!important
+    }
+    
+    .dark-mode .text-light,.dark-mode .user-avatar[class*=-dark] {
+        color: #8091a7!important
+    }
+    .dark-mode .bg-dark.user-avatar {
+        color: #1f2b3a!important;
+        background: #e5e9f2!important;
+        border-color: #e5e9f2!important
+    }
+
+    .user-avatar-multiple .user-avatar {
+        border-color: #1d2d40!important
+    }
+    .user-avatar-group .user-avatar {
+        border-color: #1d2d40
+    }
+    .dark-mode .fav-list .user-avatar:after {
+        background: #415a79
+    }
+
+    .dropdown-toggle::after {
+        display: none;
+    }
+    .user-avatar, [class^=user-avatar]:not([class*=-group]) {
+        border-radius: 50%;
+        height: 30px;
+        width: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        background: #798bff;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: .06em;
+        flex-shrink: 0;
+        position: relative;
+        border:none
+    }
+
+
+    .nk-sidebar.is-compact:not(.has-hover) .user-card {
+        position: relative;
+        left: -5px
+    }
+    
+    .user-card .user-avatar.d-none {
+        margin-right: 1rem
+    }
+    
+    .user-card .user-avatar.d-none+.user-info,.user-card .user-avatar.d-none+.user-name {
+        margin-left: 0
+    }
+    .user-card {
+        display: flex;
+        align-items: center
+    }
+    
+    .user-card-wrap {
+        padding-top: 1.125rem;
+        padding-bottom: 1.125rem
+    }
+    
+    .user-card .user-info {
+        color: #8094ae
+    }
+
+    .chat-members .user-card {
+        position: relative;
+        padding: .375rem .5rem;
+        border-radius: 3px;
+        transition: background-color .3s
+    }
+    .contacts-list .user-card {
+        position: relative;
+        padding: .375rem .5rem;
+        border-radius: 3px;
+        transition: background-color .3s
+    }
+    
+
+    
+    
+</style>
+
+
+
+{% endblock %}

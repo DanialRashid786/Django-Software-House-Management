@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<title>project list</title>
+
+<section id="herocareer" class="d-flex align-items-center justify-content-center">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-xl-6 col-lg-8">
+          <h1>Project Details<span>.</span></h1>
+        </div>
+      </div>
+    </div>
+</section><!-- End Hero -->
+
+<section class="servicesdetail" id="features" class="features">
+
+    <div class="container" data-aos="fade-up">
+      
+        <h1>All Projects</h1>
+   <br>    
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Project_Type</th>
+                    <th>Project_Title</th>
+                    <th>Project_Amount</th>
+                    <th>Proposal_Status</th>
+                    <th>Start_Date</th>
+                    <th>End_date</th>
+                    <th>Project_Status</th>
+                    <th>Payment_Status</th>
+                    <th>Project_files</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+            {% if projects %}
+            
+               
+                {% for project in projects %}
+                <tr>
+
+                 
+                 
+                    
+
+
+
+
+
+
+                    <td>{{project.servicetype}}</td>
+                    <td>{{ project.project_title }}</td>
+                    <td>{{ project.Project_Budget }}</td>
+                    
+{% if project.status == "Accepted" %}
+    <td style="color:white"><strong style="border:black;background-color:green;padding:4px">{{project.status}}</strong></td>
+{% elif project.status == "Rejected" %}
+    <td style="color:white;"><strong style="border:black;background-color:red;padding:4px">{{project.status}}</strong></td>
+{% else %}
+    <td style="color:white;"><strong style="border:black;background-color:black;padding:4px;">{{project.status|default:'Pending'}}</strong></td>
+{% endif %}
+                    
+                    <td style="color:green">{{ project.Project_Start_Date }}</td>
+                    <td style="color:red">{{ project.Project_Finnish_Date }}</td>
+
+
+{% if project.projectstatus == "Delivered" %}
+    <td style="color:white"><strong style="border:black;background-color:green;padding:4px">{{project.projectstatus}}</strong></td>
+
+{% elif project.status == "Rejected" %}
+    <td><button type="button" class="btn bg-danger text-bg-secondary disabled" > Rejected</button></td>
+
+{% elif project.projectstatus == "Complete" %}
+    <td><button type="button" class="btn bg-success text-bg-secondary" >Complete</button></td>
+{% else %}
+    <td style="color:white;"><strong style="border:black;background-color:orange;padding:4px;">{{project.projectstatus}}</strong></td>
+{% endif %}
+
+
+
+
+
+{% if project.paymentstatus == "Paid" %}
+      <td><button type="button" class="btn bg-success text-bg-secondary disabled" >Paid</button></td>
+{% elif project.status == "Rejected" %}
+      <td><button type="button" class="btn bg-danger text-bg-secondary disabled" > Rejected</button></td>
+            
+{% else %}
+     <td><a href="/" target="_blank"><button type="button" class="btn bg-danger text-bg-secondary" >Pay Now</button></a></td>
+{% endif %}
+
+
+
+
+
+{% if project.projectstatus == 'Delivered' and project.paymentstatus == "Paid" %}
+                
+                            <td>
+                                {% if project.documents.all %}
+                            {% for document in project.documents.all %}
+                            <a href="{{ document.document.url }}" download="{{ document.document.name }}">
+                                <i class="bi bi-file-earmark-text"></i>
+                                {{ document.get_file_size}}
+                            
+                                
+                            </a>
+                            <br>
+                            {% empty %}
+                            No documents uploaded.
+                            {% endfor %}
+                            {% else %}
+                            No documents uploaded.
+                            {% endif %}
+                            </td>
+                {% elif project.projectstatus == 'Delivered' or project.projectstatus == 'Complete' and project.paymentstatus == "UnPaid" %}  
+                <td>Unpaid</td> 
+
+                {% elif project.projectstatus == 'In Progress' and project.paymentstatus == "UnPaid" or project.paymentstatus == "Paid" %} 
+                <td>In Process</td>  
+                
+
+                {% else %}
+
+
+                <td>None</td>  
+
+                {% endif %}   
+
+
+
+
+
+
+    
+
+                </tr>
+                {% endfor %}
+
+
+        {% else %}
+       <h2>No Project found</h2> 
+        {% endif %}         
+                
+            </tbody>
+        </table>
+
+
+
+
+    </div>
+   
+   </section>
+
+
+{% endblock %}

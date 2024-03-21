@@ -1,0 +1,390 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<title>What-We-Do</title>
+<section id="herocareer" class="d-flex align-items-center justify-content-center">
+  <div class="container" data-aos="fade-up">
+    <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+      <div class="col-xl-6 col-lg-8">
+        <h1 style="font-size: 40px; line-height: 25px">What We Do<span>.</span></h1>
+      </div>
+    </div>
+  </div>
+</section><!-- End Hero -->
+
+<main id="main">
+
+
+  <div class="container"  data-aos="fade-up">
+    <div class="section-title pt-5">
+      <h2>What We Do</h2>
+      <p>Fueling Innovation with Purpose</p>
+    </div>
+
+ 
+
+   
+      {% comment %} //////////////////What We Do///////////////// {% endcomment %}
+
+<section id="grid_what_we_do" class="blk__grid content_block part__what_we_do default default" data-aos="fade-down">
+  <div class="container">
+    <div class="intro_text text-center">
+      <h2 class="block_title">What We Do</h2>
+     
+      <h3 class="block_title_intro">Comsats implements the best solution to transform your organization with data-driven decisions.</h3>
+    </div>
+    <br>
+    <div class="row">
+
+          {% if whatwedo %}
+
+              {% for data in whatwedo %}
+                
+                <div class="col-md-3" data-aos="fade-up">
+                  <div class="grid_item">
+                    <div class="grid_item_content image_content text-center st">
+                      <img src="{{ data.icon_image.url }}" alt="icon" class="img-fluid w-25">
+                      <h4 class="h4font">{{data.title|safe}}</h4>
+                    </div>
+                    <div class="grid_item_content text_content text-center">
+                      
+                      <div>
+                        <p class="fst-italic">{{ data.description |safe}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              {% endfor %}
+
+          {% else %}
+          Not Found
+          {% endif %}
+      
+
+    </div>
+    <div class="cta_container center text-center mt-4">
+      <a id="mb_cta_KD0yXaeAltnhGsR" class="btn btn-warning" href="{% url 'servicepage' %}" target="_self">View all of our services</a>
+    </div>
+  </div>
+
+
+
+  
+</section>
+
+
+
+
+{% comment %} //////////////////What We Do  End///////////////// {% endcomment %}
+
+
+      
+
+
+
+
+
+
+
+</main>  
+
+<section id="cta" class="cta">
+  <div class="container" data-aos="zoom-in">
+    <div class="text-center">
+      <h3>Talk data strategy with an expert</h3>
+      <p>Sign up to meet with one of our analytics experts who will review your data struggles and help map out steps to achieve data-driven decision making.</p>
+      <a class="cta-btn" href="#popup" onclick="openPopup()">Request a Session</a>
+    </div>
+  </div>
+</section>
+<br><br><br>
+
+<!-- The popup form -->
+<div class="popup-overlay" id="popup">
+  <div class="popup-content">
+    <span class="popup-close" onclick="closePopup()">&times;</span>
+
+    <h2 class="bolder">Request a Session</h2>
+    <form method="post" action="{% url 'whatwedo' %}">
+      <!-- Your form fields go here -->
+      <!-- For example: -->
+      {% csrf_token %}
+      
+      <!-- Full Name field -->
+<label for="{{ form.fname.id_for_label }}">Full Name:</label>
+{{ form.name }}
+
+<!-- Email field -->
+<label for="{{ form.email.id_for_label }}">Email:</label>
+{{ form.Email }}
+
+<!-- Phone Number field -->
+<label for="{{ form.phone.id_for_label }}">Phone Number:</label>
+{{ form.phone }}
+
+<!-- Where do you live? field -->
+<label for="{{ form.live.id_for_label }}">Where do you live?</label>
+{{ form.city }}
+
+<!-- Comments field -->
+<label for="{{ form.comments.id_for_label }}">Comments:</label>
+<textarea name="{{ form.Comments.name }}" id="{{ form.comments.id_for_label }}" cols="40" rows="2" placeholder="Let us Know what you need help with." required></textarea>
+
+
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>
+
+<!-- JavaScript to handle the popup -->
+<script>
+  function openPopup() {
+    document.getElementById("popup").style.display = "block";
+  }
+
+  function closePopup() {
+    document.getElementById("popup").style.display = "none";
+  }
+</script>
+<!-- ======= Cta Section ======= -->
+    <!-- Add this CSS in the head section or in a separate CSS file -->
+    <style>
+      /* Styles for the popup overlay */
+      .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+      }
+      
+      /* Styles for the popup box */
+      .popup-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        max-width: 80%;
+        width: 400px;
+      }
+      
+      /* Style for the close button */
+      .popup-close {
+        position: absolute;
+        top: 27px;
+        right: 10px;
+        cursor: pointer;
+      }
+      
+      .popup-content form {
+        padding: 20px;
+      }
+      
+      .popup-content label,
+      .popup-content input,
+      textarea {
+        display: block;
+        margin-bottom: 10px;
+      }
+      
+      .popup-content input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        resize: vertical;
+      }
+      
+      .popup-content input[type="submit"] {
+        background-color: #4CAF50;
+        color: #fff;
+        cursor: pointer;
+      }
+      
+      .popup-content input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      
+      @media screen and (max-width: 768px) {
+        .popup-content {
+          max-width: 100%;
+          width: 90%;
+        }
+      }
+      .bolder {
+        font-weight: bold;
+      }
+    </style>
+
+
+
+
+    <section id="grid_2" class="container-fluid blk__grid content_block block_2 default hover_boxes" style="">
+      <div class="color-bg" style="background-color: #f8f8f8;"></div>
+      <div class="inner" style="">
+          <div class="intro_text text-center" data-aos="fade-up"> <!-- Add the class 'text-center' here -->
+              <h2 class="block_title">What Sets Us Apart</h2>
+          </div>
+          <br>
+          <div class="grid_container default cols-4">
+
+
+        {% if whatsetsusapart %}
+
+            {% for data in whatsetsusapart %}
+              <!-- Grid item 1 -->
+              <div class="grid_item" data-aos="fade-up">
+                  <div class="grid_item_content image_content">
+                      <div id="image_content_G3FmserW9SQMvhR" class="" style="text-align: center;">
+                      
+                        <img src="{{ data.image.url }}" class="img-fluid">
+
+                <h3 class="et_pb_module_header"><span>{{data.title|safe}}</span></h3>
+                              
+                          <div class="hover_content">
+                              <h3>{{data.title|safe}}</h3>
+                              <p>{{data.description|safe}}</p>
+
+                          </div>
+                      </div>
+                  </div>
+              </div>
+            {% endfor %}
+
+        {% else %}
+            Not Found
+        {% endif %}
+
+              
+          </div>
+      </div>
+  </section>
+  
+
+
+
+<style>
+
+.link_text {
+  color: white;
+  font-weight: bold;
+}
+.inner h2 {
+  text-align: center;
+  color:#ffb218;
+  font-weight: bolder;
+  font-size:45px;
+}
+
+/* Responsive styles for the h2 element */
+@media screen and (max-width: 768px) {
+/* For screens with a maximum width of 768px (e.g., tablets and mobiles) */
+.inner h2 {
+  font-size: 28px; /* Reduce font size for smaller screens */
+}
+}
+
+@media screen and (max-width: 480px) {
+/* For screens with a maximum width of 480px (e.g., small mobiles) */
+.inner h2 {
+  font-size: 24px; /* Further reduce font size for smaller screens */
+}
+}
+.inner h3 {
+  font-family: Inter,Helvetica,Arial,sans-serif;
+  display: block;
+  font-size: 1.17em;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
+
+/* CSS for 4 columns in one row (large screens) */
+.grid_container.default.cols-4 {
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+padding: 5px;
+
+}
+
+/* CSS for each grid item with box effect */
+.grid_container .grid_item {
+
+flex-basis: calc(33.33% - 20px); /* Distribute width for 3 columns */
+margin-bottom: 20px;
+
+box-shadow: 0 5px 50px rgba(0, 0, 0, 0.080);
+padding: 10px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+position: relative;
+overflow: hidden;
+height: 300px;
+}
+
+/* CSS for responsiveness - 1 column in one row on mobile screens */
+@media only screen and (max-width: 576px) {
+.grid_container.default.cols-4 {
+  justify-content: center; /* Center align the items in mobile screens */
+}
+.grid_container .grid_item {
+  flex-basis: calc(100% - 20px); /* Adjust the percentage as needed for mobile screens */
+}
+}
+
+
+
+
+/* CSS for the image within the box effect */
+.grid_container .grid_item img {
+  max-width: 100%;
+  height: auto;
+  transition: transform 0.3s ease; /* Add a smooth transition effect */
+}
+
+/* CSS for the hover effect on the image */
+.grid_container .grid_item:hover img {
+  transform: scale(1.1); /* Enlarge the image slightly on hover */
+}
+
+/* CSS for the hover content */
+.hover_content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ffaa00;
+  padding:20px;
+  display: flex;
+  color:white;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  opacity: 0; /* Hide the hover content initially */
+  transition: opacity 0.3s ease; /* Add a smooth transition effect for opacity */
+}
+
+/* CSS to show hover content on hover */
+.grid_container .grid_item:hover .hover_content {
+  opacity: 1; /* Show the hover content on hover */
+}
+</style>
+
+    
+
+{% endblock %}

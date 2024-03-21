@@ -1,0 +1,114 @@
+{% load static %}
+{% csrf_token %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link href="{% static 'loginstyle/style.css' %}" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/11133abfb9.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+    
+            <div class="row d-flex  align-items-center">
+                <div class="col-md-9 col-lg-6 col-xl-4 text-center">
+                    <br>
+                    {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                        <li style="list-style: none;">
+                            <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"
+                                    aria-label="Success:">
+                                    <use xlink:href="#check-circle-fill" />
+                                </svg>
+                                <div>
+                                    <b>{{ message }}</b>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="container-fluid">
+                     <a href="/"> <img src="{% static 'loginstyle/img/login.png' %}" class="img-fluid" alt="Sample image"> </a>
+                    </div>
+                        
+                    
+                </div>
+
+                <div class="col-md-8 col-lg-4 col-xl-6 offset-xl-1 mt-5">
+                    <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px; color:black;">Sign into your account</h5>
+                    <form action="{% url 'loginview' %}" method="POST">
+                        {% csrf_token %}
+
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <input type="text" id="form3Example3" class="form-control form-control-lg"
+                                placeholder="Enter a valid User Name" name="username" />
+                            <label class="form-label" for="form3Example3">User Name</label>
+                        </div>
+
+                        <!-- Password input -->
+                        <div class="form-outline mb-3">
+                            <input type="password" id="form3Example4" class="form-control form-control-lg"
+                                placeholder="Enter password" name="password" />
+                            <label class="form-label" for="form3Example4">Password</label>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <!-- Checkbox -->
+                            <div class="form-check mb-0">
+                                <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
+                                <label class="form-check-label" for="form2Example3">
+                                    Remember me
+                                </label>
+                            </div>
+                            <a href="{% url 'password_reset' %}" class="text-body">Forgot password?</a>
+                        </div>
+
+                        <div class="text-center text-lg-start mt-4 pt-2">
+                            <button type="Submit" class="btn btn-primary btn-lg"
+                                style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+
+                            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a
+                                    href="{% url 'register_attempt' %}" class="link-danger">Register</a></p>
+                        </div>
+
+                        <div class="divider d-flex flex-row align-items-center justify-content-center justify-content-lg-start my-4">
+                          <p class="text-center fw-bold mx-3 mb-0">Or</p>
+                      </div>
+
+                        <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                            <p class="lead fw-normal mb-0">Sign in with</p>
+                            <button type="button" class="btn">
+                                <img class="img-fluid" src="{% static 'loginstyle/img/google.png' %}" alt="">
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+   
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-97Zwmr7Y9s2bj1GMXJ1YHAe8G08FHp4uBPP2e7A3FfViGgtxjlz3PtkoLzopv/KW" crossorigin="anonymous"></script>
+</body>
+
+</html>

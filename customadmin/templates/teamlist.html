@@ -1,0 +1,114 @@
+{% extends 'baseadmin.html' %}
+{% load static %}
+
+{% block content %}
+<title>Software Development Team</title>
+
+<main id="main" class="main">
+  <div class="container">
+  <div class="pagetitle">
+    <h1>Software Development Team</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <!-- Filter form -->
+            <br>
+            <form method="GET">
+              <select name="team_type">
+                <option value="" {% if not request.GET.team_type %}selected{% endif %}>All</option>
+                <option value="Developer" {% if request.GET.team_type == 'Developer' %}selected{% endif %}>Developer</option>
+                <option value="Designer" {% if request.GET.team_type == 'Designer' %}selected{% endif %}>Designer</option>
+                <option value="Business Analyst" {% if request.GET.team_type == 'Business Analyst' %}selected{% endif %}>Business Analyst</option>
+                <option value="QA Engineer" {% if request.GET.team_type == 'QA Engineer' %}selected{% endif %}>QA Engineer</option>
+                <option value="DEVOPS" {% if request.GET.team_type == 'DEVOPS' %}selected{% endif %}>DEVOPS</option>
+              </select>
+
+
+              <select name="projectmanager">
+                <option value="">All</option>
+                {% for manager in project_manager %}
+                <option value="{{ manager.job }}" 
+                {% if request.GET.projectmanager == manager.job %}
+                selected
+                {% endif %}>
+                {{ manager.job }}</option>
+                {% endfor %}
+              </select>
+
+              <button type="submit">Filter</button>
+            </form>
+            <!-- End Filter form -->
+
+            <!-- Table with stripped rows -->
+            <div class="table-responsive">
+              <table class="table table-striped">
+              <thead class="text-center">
+                <tr>
+                  <th scope="col">id#</th>
+                  <th scope="col">UserName</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Team_Type</th>
+                  <th scope="col">Project_manager</th>
+                  <th scope="col">Manager-Name</th>
+                  <th scope="col">Address</th>
+                  <th scope="col">Country</th>
+                  <th scope="col">Profile Image</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if users %}
+                {% for user in users %}
+                {% for detail in projectTeam %}
+                {% if user.id == detail.user.id %}
+      
+      {% if not request.GET.team_type or request.GET.team_type == detail.team_type %} 
+
+    <!-- Display the table row -->
+    <tr>
+      <th scope="row">{{ user.id }}</th>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ detail.team_type }}</td>
+      <td>{{ detail.project_manager }}</td>
+      <td>{{ detail.project_manager.user }}</td>
+      <td>{{ detail.address }}</td>
+      <td>{{ detail.country }}</td>
+      <td style="width: 20%;text-align: center;">
+        {% if detail.profileimage %}
+          <img src="{{ detail.profileimage.url }}" onerror="this.src='{% static 'assetsadmin/img/customer.png' %}'"; alt="image" class="prod-size d-block mx-auto" style="width: 50%; height: 50%;">
+          <a href="http://127.0.0.1:8000/media/{{ detail.profileimage }}">image</a>
+        {% else %}
+          <p>Image not set</p>
+        {% endif %}
+      </td>
+    </tr>
+  {% endif %}
+{% endif %}
+                {% endfor %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td colspan="9">No Team Found</td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+           </div> 
+            <!-- End Table with stripped rows -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</main><!-- End #main -->
+{% endblock %}

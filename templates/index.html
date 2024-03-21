@@ -1,0 +1,851 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<title>Comsats-Software-House</title>
+
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="d-flex align-items-center justify-content-center">
+    
+    <div class="container" data-aos="fade-up">
+      {% comment %} ///////display message//////////////// {% endcomment %}
+      <br><br><br>
+      {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+        <li style="list-style: none;">
+          <div class="alert alert-success d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+            <div>
+              <b>{{ message }}</b>
+            </div>
+          </div>
+        </li>
+        {% endfor %}
+      </div>
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+      <script>
+        $(document).ready(function() {
+          $('.messages').delay(2000).fadeOut('slow', function() {
+            $(this).empty();
+          });
+        });
+      </script>
+      {% endif %}
+       
+{% comment %}////////display message end  /////////////{% endcomment %}
+
+      <div class="row justify-content-center" data-aos="fade-up"  >
+        <div class="col-xl-6 col-lg-8">
+          <br><br>
+          <h1>COMSATS SOFTWARE HOUSE<span>.</span></h1>
+          <h2>We are team of Software Developers</h2>
+        </div>
+      </div>
+     
+      <div class="row gy-4 mt-5 justify-content-center" data-aos="zoom-in"  >
+        
+       
+        <div class="col-xl-2 col-md-4">
+          <div class="icon-box">
+            {% comment %} <i class="ri-calendar-todo-line"></i> {% endcomment %}
+            <iconify-icon icon="ion:business-outline" style="color: #ffc451;" width="40" height="40"></iconify-icon>
+            <h3><a href="{% url 'servicepage'  %}">Business Intelligence</a></h3>
+          </div>
+        </div>
+        <div class="col-xl-2 col-md-4">
+          <div class="icon-box">
+            {% comment %} <i class="ri-paint-brush-line"></i> {% endcomment %}
+            <iconify-icon icon="iconoir:brain-research" style="color: #ffc451;" width="40" height="40"></iconify-icon>
+            <h3><a href="{% url 'servicepage'  %}">Research Consultancy</a></h3>
+          </div>
+        </div>
+        <div class="col-xl-2 col-md-4">
+          <div class="icon-box">
+            {% comment %} <i class="ri-database-2-line"></i> {% endcomment %}
+            <iconify-icon icon="streamline:computer-robot-cyborg-artificial-robotics-robot-intelligence-machine-technology-android" style="color: #ffc451;" width="40" height="40"></iconify-icon>
+            <h3><a href="{% url 'servicepage'  %}">Artificial Intelligence</a></h3>
+          </div>
+        </div>
+
+        <div class="col-xl-2 col-md-4">
+          <div class="icon-box">
+            <i class="ri-store-line"></i>
+            <h3><a href="{% url 'servicepage'  %}">Web Development</a></h3>
+          </div>
+        </div>
+        <div class="col-xl-2 col-md-4">
+          <div class="icon-box">
+            <i class="ri-bar-chart-box-line"></i>
+            <h3><a href="{% url 'servicepage'  %}">App Development</a></h3>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    
+  </section><!-- End Hero -->
+  
+  <main id="main">
+
+{% comment %} ///////display message//////////////// {% endcomment %}
+{% comment %} {% if messages %}
+    <div class="messages">
+  {% for message in messages %}
+    <li style="list-style: none;">
+      <div class="alert alert-success d-flex align-items-center" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+        <div>
+          <b>{{message}}</b>
+        </div>
+      </div>
+    </li>
+ {% endfor %}
+   </div>
+{% endif %}   {% endcomment %}
+  {% comment %}////////display message end  /////////////{% endcomment %}
+
+   
+
+<!-- ======= About Section ======= -->
+{% if about_entry %}
+
+<section id="about" class="about">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row">
+        <div class="col-lg-4 order-1 order-lg-2 justify-content-center" data-aos="fade-left" data-aos-delay="100">
+          <img src="{{ about_entry.image.url }}" class="img-fluid pt-4" alt="img">
+        </div>
+        
+        <div class="col-lg-8 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right" data-aos-delay="100">
+          <h3>{{ about_entry.title |safe|capfirst}}</h3>
+          <p class="fst-italic" style="text-align: justify;">
+            {{ about_entry.content |safe}}
+          </p>
+          <ul>
+         
+          
+            {% for sentence in about_entry.sentences %}
+                <li><i class="ri-check-double-line"></i>{{ sentence }}</li>
+            {% endfor %}
+          </ul>
+        
+        </div>
+      </div>
+
+    </div>
+  </section><!-- End About Section -->
+
+  {% else %}
+    
+  {% endif %}
+
+
+
+
+
+
+
+   <!-- ======= Features Section ======= -->
+   <section id="features" class="features">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row">
+        <div class="image col-lg-6" style='background-image: url("{% static 'assets/img/features.jpg' %}");' data-aos="fade-right"></div>
+        <div class="col-lg-6" data-aos="fade-left" data-aos-delay="100">
+          <div class="icon-box mt-5 mt-lg-0" data-aos="zoom-in" data-aos-delay="150">
+            <i class="bx bx-receipt"></i>
+            <h4>Ingenuity</h4>
+            <p>The ability to be clever, original, and inventive. Creative, innovative, and imaginative.</p>
+          </div>
+          <div class="icon-box mt-5" data-aos="zoom-in" data-aos-delay="150">
+            <i class="bx bx-cube-alt"></i>
+            <h4>Integrity</h4>
+            <p>Free from pretense, deceit, or hypocrisy. Honest and having strong moral principles.</p>
+          </div>
+          <div class="icon-box mt-5" data-aos="zoom-in" data-aos-delay="150">
+            <i class="bx bx-images"></i>
+            <h4>Adventure</h4>
+            <p>Having the courage to take risks. Be bold, daring, enterprising, and gutsy.</p>
+          </div>
+          <div class="icon-box mt-5" data-aos="zoom-in" data-aos-delay="150">
+            <i class="bx bx-shield"></i>
+            <h4>Childlike Spirit</h4>
+            <p>Having the spirit of a child: curious, spontaneous, fun-loving, inquisitive, and full of energy.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section><!-- End Features Section -->
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ======= Services Section ======= -->
+    <section id="services" class="services">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Services</h2>
+          <p>Check our Services</p>
+        </div>
+
+        <div class="row">
+
+    {% for n in newData %}
+          <div class="col-lg-4 col-md-6 d-flex align-items-stretch" data-aos="zoom-in"  >
+          <a href="{% url 'servicedetail' n.title_slug %}"> 
+            <div class="icon-box">
+              <div class="icon"><img src="/media/{{n.serviceimage}}" class="img-fluid" alt="android"></div>
+              <h4><a href="{% url 'servicedetail' n.title_slug %}">{{n.service_title}}</a></h4>
+              <p class="fst-italic">{{n.service_desc|safe}}</p>
+            </div>
+          </a> 
+          </div>
+    {% endfor %}      
+
+
+         
+        </div>
+
+      </div>
+    </section><!-- End Services Section -->
+
+
+
+
+    {% if dataStrategies %}
+
+    <section  class="Dataworks pt-0">
+      <div class="container aos-init aos-animate" data-aos="fade-up">
+        <div class="row no-gutters">
+
+          <div class="col-xl-12 ps-4 ps-lg-5 pe-4 pe-lg-1 d-flex align-items-stretch aos-init aos-animate" data-aos="fade-left" data-aos-delay="100">
+
+            <div class="content d-flex flex-column justify-content-center">
+
+              <h1 class="h1 dataworksh2">How We Can Make Your Data Work for You
+                <hr>
+              </h1>
+            
+              <br><br>
+              <div class="row">
+
+                {% for data in dataStrategies %}
+                
+                
+                
+                <div class="col-md-6 d-md-flex align-items-md-stretch">
+                  <div class="count-box">
+                   <i class="p-0 m-0">
+                    <img src="{{data.Image.url|safe}}" class="img-icons" alt="img">
+                    </i> 
+                    
+                    <h3 class="h3 headingtitle"> {{data.title|safe}}</h3>
+                    <p style="text-align: justify;">{{data.content|safe}}</p>
+                    
+                  </div>
+                </div>
+                <!-- ... Repeat for other col-md-6 elements ... -->
+
+
+                {% endfor %}
+                
+
+
+                
+            </div><!-- End .content -->
+
+
+
+
+            
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    {% else %}
+    {% endif %}    
+
+
+
+
+    
+
+    <!-- ======= Cta Section ======= -->
+    <!-- Add this CSS in the head section or in a separate CSS file -->
+    <style>
+      /* Styles for the popup overlay */
+      .popup-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+      }
+      
+      /* Styles for the popup box */
+      .popup-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        max-width: 80%;
+        width: 400px;
+      }
+      
+      /* Style for the close button */
+      .popup-close {
+        position: absolute;
+        top: 27px;
+        right: 10px;
+        cursor: pointer;
+      }
+      
+      .popup-content form {
+        padding: 20px;
+      }
+      
+      .popup-content label,
+      .popup-content input,
+      textarea {
+        display: block;
+        margin-bottom: 10px;
+      }
+      
+      .popup-content input,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        resize: vertical;
+      }
+      
+      .popup-content input[type="submit"] {
+        background-color: #4CAF50;
+        color: #fff;
+        cursor: pointer;
+      }
+      
+      .popup-content input[type="submit"]:hover {
+        background-color: #45a049;
+      }
+      
+      @media screen and (max-width: 768px) {
+        .popup-content {
+          max-width: 100%;
+          width: 90%;
+        }
+      }
+      .bolder {
+        font-weight: bold;
+      }
+    </style>
+  
+    <section id="cta" class="cta">
+      <div class="container" data-aos="zoom-in">
+        <div class="text-center">
+          <h3>Talk data strategy with an expert</h3>
+          <p>Sign up to meet with one of our analytics experts who will review your data struggles and help map out steps to achieve data-driven decision making.</p>
+          <a class="cta-btn" href="#popup" onclick="openPopup()">Request a Session</a>
+        </div>
+      </div>
+    </section>
+  
+    <!-- The popup form -->
+    <div class="popup-overlay" id="popup">
+      <div class="popup-content">
+        <span class="popup-close" onclick="closePopup()">&times;</span>
+  
+        <h2 class="bolder">Request a Session</h2>
+        <form method="post" action="{% url 'homepage' %}">
+          <!-- Your form fields go here -->
+          <!-- For example: -->
+          {% csrf_token %}
+          
+          <!-- Full Name field -->
+    <label for="{{ form.fname.id_for_label }}">Full Name:</label>
+    {{ form.name }}
+
+    <!-- Email field -->
+    <label for="{{ form.email.id_for_label }}">Email:</label>
+    {{ form.Email }}
+
+    <!-- Phone Number field -->
+    <label for="{{ form.phone.id_for_label }}">Phone Number:</label>
+    {{ form.phone }}
+
+    <!-- Where do you live? field -->
+    <label for="{{ form.live.id_for_label }}">Where do you live?</label>
+    {{ form.city }}
+
+    <!-- Comments field -->
+    <label for="{{ form.comments.id_for_label }}">Comments:</label>
+    <textarea name="{{ form.Comments.name }}" id="{{ form.comments.id_for_label }}" cols="40" rows="2" placeholder="Let us Know what you need help with." required></textarea>
+  
+    
+          <input type="submit" value="Submit">
+        </form>
+      </div>
+    </div>
+  
+    <!-- JavaScript to handle the popup -->
+    <script>
+      function openPopup() {
+        document.getElementById("popup").style.display = "block";
+      }
+  
+      function closePopup() {
+        document.getElementById("popup").style.display = "none";
+      }
+    </script>
+
+
+
+
+
+
+
+
+    <!-- ======= Portfolio Section ======= -->
+    <section id="portfolio" class="portfolio">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Portfolio</h2>
+          <p>Check our Portfolio</p>
+        </div>
+
+        
+        <div class="row" data-aos="fade-up">
+          <div class="col-lg-12 d-flex justify-content-center">
+            <ul id="portfolio-flters">
+              <li data-filter="*" class="filter-active">All</li>  
+              <li data-filter=".filter-Business">Business Intelligence</li>
+              <li data-filter=".filter-Research">Research Consultancy</li>
+              <li data-filter=".filter-AI">Artificial Intelligencet</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="row portfolio-container" data-aos="fade-up"  >
+
+    {% if myportfolio %}
+        
+      {% for i in myportfolio %}
+          <div class="col-lg-4 col-md-6 portfolio-item {{i.data_filter}}">
+            <div class="portfolio-wrap">
+              <img src="/media/{{i.portfolio_Image}}" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="/media/{{i.portfolio_Image}}" data-gallery="portfolioGallery" class="portfolio-lightbox" title="{{i.Image_Title}}"><i class="bx bx-plus"></i></a>
+                <a href="{% url 'portfoliodetails' i.id %}" title="More Details"><i class="bx bx-link"></i></a>
+              </div>
+            </div>
+          </div>
+      {% endfor %} 
+    
+    {% else %}
+       <p>No Portfolio found</p>
+    {% endif %}   
+          
+
+        </div>
+
+          
+
+      </div>
+    </section><!-- End Portfolio Section -->
+
+
+
+
+<!-- ======= Counts Section ======= -->
+<section id="counts" class="counts">
+  <div class="container" data-aos="fade-up">
+
+    <div class="row no-gutters">
+      <div class="image col-xl-5 d-flex align-items-stretch justify-content-center justify-content-lg-start" data-aos="fade-right" data-aos-delay="100"></div>
+      <div class="col-xl-7 ps-0 ps-lg-5 pe-lg-1 d-flex align-items-stretch" data-aos="fade-left" data-aos-delay="100">
+       <div class="container-fluid">
+        <div class="content d-flex flex-column justify-content-center">
+          <h3>OUR PROGRESS</h3>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit
+          </p>
+          <div class="row">
+            <div class="col-md-6 d-md-flex align-items-md-stretch">
+              <div class="count-box">
+                <i class="bi bi-emoji-smile"></i>
+                <span data-purecounter-start="0" data-purecounter-end="65" data-purecounter-duration="2" class="purecounter"></span>
+                <p><strong>Happy Clients</strong> consequuntur voluptas nostrum aliquid ipsam architecto ut.</p>
+              </div>
+            </div>
+
+            <div class="col-md-6 d-md-flex align-items-md-stretch">
+              <div class="count-box">
+                <i class="bi bi-journal-richtext"></i>
+                <span data-purecounter-start="0" data-purecounter-end="85" data-purecounter-duration="2" class="purecounter"></span>
+                <p><strong>Projects</strong> adipisci atque cum quia aspernatur totam laudantium et quia dere tan</p>
+              </div>
+            </div>
+
+            <div class="col-md-6 d-md-flex align-items-md-stretch">
+              <div class="count-box">
+                <i class="bi bi-clock"></i>
+                <span data-purecounter-start="0" data-purecounter-end="35" data-purecounter-duration="4" class="purecounter"></span>
+                <p><strong>Years of experience</strong> aut commodi quaerat modi aliquam nam ducimus aut voluptate non vel</p>
+              </div>
+            </div>
+
+            <div class="col-md-6 d-md-flex align-items-md-stretch">
+              <div class="count-box">
+                <i class="bi bi-award"></i>
+                <span data-purecounter-start="0" data-purecounter-end="20" data-purecounter-duration="4" class="purecounter"></span>
+                <p><strong>Awards</strong> rerum asperiores dolor alias quo reprehenderit eum et nemo pad der</p>
+              </div>
+            </div>
+          </div>
+        </div><!-- End .content-->
+      </div> 
+      </div>
+    </div>
+
+  </div>
+</section><!-- End Counts Section -->
+
+<!-- ======= Testimonials Section ======= -->
+<section id="testimonials" class="testimonials">
+  <div class="container" data-aos="zoom-in">
+
+    <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
+      <div class="swiper-wrapper">
+
+        <div class="swiper-slide">
+          <div class="testimonial-item">
+            <img src="{% static 'assets/img/testimonials/team-3.png' %}" class="testimonial-img" alt="">
+            <h3>Dr Muhammad Farhan</h3>
+            <h4>Supervisor &amp; Founder</h4>
+            <p>
+              <i class="bx bxs-quote-alt-left quote-icon-left"></i>
+              Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam, risus at semper.
+              <i class="bx bxs-quote-alt-right quote-icon-right"></i>
+            </p>
+          </div>
+        </div><!-- End testimonial item -->
+
+        <div class="swiper-slide">
+          <div class="testimonial-item">
+            <img src="{% static 'assets/img/testimonials/team-2.png' %}" class="testimonial-img" alt="">
+            <h3>Mr.Ahmed Shaf</h3>
+            <h4>Chief Executive Officer</h4>
+            <p>
+              <i class="bx bxs-quote-alt-left quote-icon-left"></i>
+              Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid cillum eram malis quorum velit fore eram velit sunt aliqua noster fugiat irure amet legam anim culpa.
+              <i class="bx bxs-quote-alt-right quote-icon-right"></i>
+            </p>
+          </div>
+        </div><!-- End testimonial item -->
+
+        <div class="swiper-slide">
+          <div class="testimonial-item">
+            <img src="{% static 'assets/img/testimonials/danialteam.png' %}" class="testimonial-img" alt="">
+            <h3>DANIAL RASHID</h3>
+            <h4>Developer</h4>
+            <p>
+              <i class="bx bxs-quote-alt-left quote-icon-left"></i>
+              Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam duis minim tempor labore quem eram duis noster aute amet eram fore quis sint minim.
+              <i class="bx bxs-quote-alt-right quote-icon-right"></i>
+            </p>
+          </div>
+        </div><!-- End testimonial item -->
+
+        <div class="swiper-slide">
+          <div class="testimonial-item">
+            <img src="{% static 'assets/img/testimonials/awaisali.png' %}" class="testimonial-img" alt="">
+            <h3>Awais Ali</h3>
+            <h4>Data Engineer</h4>
+            <p>
+              <i class="bx bxs-quote-alt-left quote-icon-left"></i>
+              Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat minim velit minim dolor enim duis veniam ipsum anim magna sunt elit fore quem dolore labore illum veniam.
+              <i class="bx bxs-quote-alt-right quote-icon-right"></i>
+            </p>
+          </div>
+        </div><!-- End testimonial item -->
+
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+
+  </div>
+</section><!-- End Testimonials Section -->
+
+<!-- ======= Team Section ======= -->
+<section id="team" class="team">
+  <div class="container" data-aos="fade-up">
+
+    <div class="section-title">
+      <h2>Our Teams</h2>
+      <p>Check our Team</p>
+    </div>
+
+    <div class="row">
+
+      <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
+        <div class="member" data-aos="fade-up" data-aos-delay="300">
+          <div class="member-img">
+            <img src="{% static 'assets/img/team/team-3.png' %}" class="img-fluid" alt="">
+            <div class="social">
+              <a href=""><i class="bi bi-twitter"></i></a>
+              <a href=""><i class="bi bi-facebook"></i></a>
+              <a href=""><i class="bi bi-instagram"></i></a>
+              <a href=""><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+          <div class="member-info">
+            <h4>Dr Muhammad Farhan</h4>
+            <span>Supervisor</span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
+        <div class="member" data-aos="fade-up" data-aos-delay="200">
+          <div class="member-img">
+            <img src="{% static 'assets/img/team/team-2.png' %}" class="img-fluid" alt="">
+            <div class="social">
+              <a href=""><i class="bi bi-twitter"></i></a>
+              <a href=""><i class="bi bi-facebook"></i></a>
+              <a href=""><i class="bi bi-instagram"></i></a>
+              <a href=""><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+          <div class="member-info">
+            <h4>Mr.Ahmed Shaf</h4>
+            <span>Chief Executive Officer</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
+        <div class="member" data-aos="fade-up" data-aos-delay="100">
+          <div class="member-img">
+            <img src="{% static 'assets/img/team/danialteam.png' %}" class="img-fluid" alt="">
+            <div class="social">
+              <a href=""><i class="bi bi-twitter"></i></a>
+              <a href=""><i class="bi bi-facebook"></i></a>
+              <a href=""><i class="bi bi-instagram"></i></a>
+              <a href=""><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+          <div class="member-info">
+            <h4>DANIAL RASHID</h4>
+            <span>Developer</span>
+          </div>
+        </div>
+      </div>
+
+      
+
+      
+
+      <div class="col-lg-3 col-md-6 d-flex align-items-stretch">
+        <div class="member" data-aos="fade-up" data-aos-delay="400">
+          <div class="member-img">
+            <img src="{% static 'assets/img/team/awaisali.png' %}" class="img-fluid" alt="">
+            <div class="social">
+              <a href=""><i class="bi bi-twitter"></i></a>
+              <a href=""><i class="bi bi-facebook"></i></a>
+              <a href=""><i class="bi bi-instagram"></i></a>
+              <a href=""><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+          <div class="member-info">
+            <h4>Awais Ali</h4>
+            <span>Data Engineer</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section><!-- End Team Section -->
+
+ 
+
+
+
+{% if faqs %}
+
+
+
+    <div class="faq_area section_padding_130" id="faq" data-aos="fade-up">
+      <div class="container">
+
+          <div class="row justify-content-center">
+              <div class="col-12 col-sm-8 col-lg-6">
+                  <!-- Section Heading-->
+                  <div class="section_heading text-center wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+
+                    <div class="icon"><img src="{% static 'assets/img/faqicon2.png' %}" alt="FAQ" class="img-fluid p-4"></div>
+
+                      <h2> Frequently Asked Questions</h2>
+                      <p>KASWA.AI is a software development company known for its innovative approach, crafting efficient digital solutions that redefine user experiences.</p>
+                      <div class="line"></div>
+                  </div>
+              </div>
+          </div>
+
+
+
+          <div class="row justify-content-center">
+              <!-- FAQ Area-->
+              <div class="col-12 col-sm-10 col-lg-8">
+                  <div class="accordion faq-accordian" id="faqAccordion">
+
+
+                    {% for faq in faqs %}
+                <div class="card border-0 wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;" data-aos="fade-up">
+                    <div class="card-header" id="heading{{ forloop.counter }}">
+                        <h6 class="mb-0">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="collapse{{ forloop.counter }}">
+                                {{ faq.question |safe}} <span class="lni-chevron-up"></span>
+                            </button>
+                        </h6>
+                    </div>
+                    <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#faqAccordion">
+                        <div class="card-body" style="text-align: justify;text-justify: auto;">
+                            {{ faq.answer |safe}}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                     
+                
+
+                  <!-- Support Button-->
+                  <div class="support-button text-center d-flex align-items-center justify-content-center mt-4 wow fadeInUp" data-wow-delay="0.5s" style="visibility: visible; animation-delay: 0.5s; animation-name: fadeInUp;">
+                      <i class="lni-emoji-sad"></i>
+                      <p class="mb-0 px-2">Can't find your answers?</p>
+                      <a href="#contact"> Contact us</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+</div>
+
+{% else %}
+{% endif %} 
+
+
+
+
+
+
+
+
+
+
+
+    <!-- ======= Contact Section ======= -->
+    <section id="contact" class="contact">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-title">
+          <h2>Contact</h2>
+          <p>Contact Us</p>
+        </div>
+
+        <div>
+        
+          <iframe style="border:0; width: 100%; height: 270px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3432.727882171659!2d73.146918314459!3d30.641625697070253!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3922b6e4dde0c501%3A0xc37ea3d85326203!2sCOMSATS%20University%20Islamabad%20-%20Sahiwal%20Campus!5e0!3m2!1sen!2s!4v1670336676677!5m2!1sen!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+
+        <div class="row mt-5">
+
+          <div class="col-lg-4">
+            <div class="info">
+              <div class="address">
+                <i class="bi bi-geo-alt"></i>
+                <h4>Location:</h4>
+                <p>Comsats University Rd, off GT road،, Sahiwal, Sahiwal District, Punjab 57000, Pakistan</p>
+              </div>
+
+              <div class="email">
+                <i class="bi bi-envelope"></i>
+                <h4>Email:</h4>
+                <p>comsats.edu.pk</p>
+              </div>
+
+              <div class="phone">
+                <i class="bi bi-phone"></i>
+                <h4>Call:</h4>
+                <p>0404305005</p>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="col-lg-8 mt-5 mt-lg-0">
+
+            <form action="{% url 'contactfrom' %}" method="post" role="form" class="" id="task-form">
+            {% csrf_token %} 
+              <div class="row">
+                <div class="col-md-6 form-group">
+                  <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+                </div>
+                <div class="col-md-6 form-group mt-3 mt-md-0">
+                  <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+                </div>
+              </div>
+              <div class="form-group mt-3">
+                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
+              </div>
+              <div class="form-group mt-3">
+                <textarea class="form-control" name="message" rows="5" placeholder="Message" required id="message"></textarea>
+              </div>
+             <br>
+              <div class="text-center"><button class="btn bg-warning" type="submit">Send Message</button></div>
+            
+            <br>
+           
+            </form>
+            
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Contact Section -->
+
+
+
+
+  </main><!-- End #main -->
+
+{% endblock %}

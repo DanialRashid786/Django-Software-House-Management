@@ -1,0 +1,68 @@
+
+
+.back{
+  color: rgb(0, 0, 0);
+  overflow-x: hidden;
+  height: 100%;
+  background-repeat:no-repeat;
+  background-size: 100% 100%;
+  background-attachment: fixed;
+
+  background-image: url("https://img.freepik.com/free-photo/group-people-working-website-template_53876-25068.jpg?w=826&t=st=1671297987~exp=1671298587~hmac=6b6bc72838c4f6085d3ca151df7b28ec91f4ea33292395bccbee30296d2d1d45"), linear-gradient(rgba(0, 0, 0, 0.666),rgba(0, 0, 0, 0.666));
+  background-blend-mode: overlay;
+}
+
+.card {
+  padding: 30px 40px;
+  margin-top: 60px;
+  margin-bottom: 60px;
+  border: none !important;
+  box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 50px;
+}
+.blue-text {
+  color: #00bcd4;
+}
+.form-control-label {
+  margin-bottom: 0;
+}
+input,
+textarea,
+button {
+  padding: 8px 15px;
+  border-radius: 5px !important;
+  margin: 5px 0px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  font-size: 18px !important;
+  font-weight: 300;
+}
+input:focus,
+textarea:focus {
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  border: 1px solid #00bcd4;
+  outline-width: 0;
+  font-weight: 400;
+}
+.btn-block {
+  text-transform: uppercase;
+  font-size: 15px !important;
+  font-weight: 400;
+  height: 43px;
+  cursor: pointer;
+}
+.btn-block:hover {
+  color: #fff !important;
+}
+button:focus {
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  outline-width: 0;
+}
+
+
+
+

@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <title>Request form of {{ service.service_title }}</title>
+
+    <section id="herorequest" class="d-flex align-items-center justify-content-center">
+        <div class="container" data-aos="fade-up">
+            <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+                <div class="col-xl-6 col-lg-8">
+                    <h1>Request For Services<span>.</span></h1>
+                </div>
+            </div>
+        </div>
+    </section><!-- End Hero -->
+
+    <br>
+
+    {% comment %} ///////display message//////////////// {% endcomment %}
+    {% if messages %}
+        <div class="container mt-4">
+            {% for message in messages %}
+                <div class="alert alert-dismissible fade show {% if message.tags == 'error' %}alert-warning{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-danger{% endif %}" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% comment %}////////display message end  /////////////{% endcomment %}
+
+    <section id="features" class="features">
+        <div class="container" data-aos="fade-up">
+            <h2 class="h2 center">Request Form ({{ service.service_title }})</h2>
+            <div class="row border border-warning p-5">
+                <div class="col-lg-4 order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
+                    <img src="{% static 'assets/img/request.jpg' %}" class="img-fluid w-100" alt="">
+                </div>
+                <div class="col-lg-8 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right" data-aos-delay="100">
+                    <!-- Add a container for general form errors -->
+                    <div id="formErrors" class="alert alert-danger" style="display: none;">
+                        <strong>Error!</strong> Please correct the following errors:
+                        <ul>
+                            {% for form in formset %}
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+    
+                    <!-- Add a container for success messages -->
+                    <div id="successMessage" class="alert alert-success" style="display: none;">
+                        
+                    </div>
+    
+                    <form id="proposalForm" action="" method="post" role="form" enctype="multipart/form-data">
+                        {% csrf_token %}
+    
+                        <!-- Loop through forms in the formset -->
+                        {% for form in formset %}
+                        <!-- Add this block to display individual form errors -->
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <strong>Error!</strong> Please correct the following errors for form {{ forloop.counter }}:
+                                <ul>
+                                    {% for field, errors in form.errors.items %}
+                                        {% for error in errors %}
+                                            <li>{{ field|title }}: {{ error }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    
+    
+                        <!-- Add this block to display form fields -->
+                        <div class="form-group">
+                            {{ formset.management_form }}
+                            {% for form in formset %}
+                                {{ form.as_table }}
+                            {% endfor %}
+                        
+                        </div>
+                        <button type="submit" class="btn btn-warning">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Assuming your phone_number field has the 'form-control' class
+        $('.form-control[name="phone_number"]').inputmask({ mask: '+999999999999' });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#proposalForm").submit(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+            var form = $(this);
+            var formErrors = $("#formErrors");
+            var successMessage = $("#successMessage");
+
+            // Perform AJAX submission
+            $.ajax({
+                type: form.attr("method"),
+                url: form.attr("action"),
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status) {
+                        // Reset the form fields
+                        form.trigger('reset');
+
+                        // Display success message
+                        formErrors.hide();
+                        successMessage.html('<b>' + response.message + '</b>').show();
+
+                        // Automatically hide the success message after 5 seconds (adjust as needed)
+                        setTimeout(function () {
+                            successMessage.hide();
+                        }, 5000);
+                    } else {
+                        // Display error messages
+                        if (response.errors) {
+                            // Handle formset errors
+                            var formsetErrorsHtml = '<div class="alert alert-danger">';
+                            formsetErrorsHtml += '<strong>Formset Errors:</strong>';
+                            formsetErrorsHtml += '<ul>';
+                            $.each(response.errors, function (field, fieldError) {
+                                formsetErrorsHtml += '<li>' + field + ': ' + fieldError + '</li>';
+                            });
+                            formsetErrorsHtml += '</ul>';
+                            formsetErrorsHtml += '</div>';
+                            formErrors.html(formsetErrorsHtml).show();
+                        } else if (response.error) {
+                            // Handle other errors
+                            formErrors.html('<p class="text-danger">' + response.error + '</p>').show();
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error, e.g., display form errors
+                    console.log(xhr.responseJSON);
+                    var errors = xhr.responseJSON.errors;
+
+                    if (errors) {
+                        // Display field-specific errors under the corresponding input fields
+                        $.each(errors, function (field, fieldError) {
+                            var fieldId = field + '-errors';
+                            var fieldElement = $('#' + fieldId);
+                            fieldElement.html('<p class="text-danger">' + fieldError + '</p>').show();
+                        });
+
+                        // Hide the general form errors container
+                        formErrors.hide();
+                    } else if (xhr.responseJSON.error) {
+                        // Display a general form error
+                        formErrors.html('<p class="text-danger">' + xhr.responseJSON.error + '</p>').show();
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+   
+    
+
+
+    <style>
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        select,
+        input[type="number"],
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #f0ad4e;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}

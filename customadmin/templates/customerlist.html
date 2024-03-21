@@ -1,0 +1,104 @@
+{% extends 'baseadmin.html' %} {% load static %} {% block content %}
+<title>Customers</title>
+
+  <main id="main" class="main">
+    <div class="container">
+    <div class="pagetitle">
+      <h1>Customers</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+          <li class="breadcrumb-item active">customer</li>
+        
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+      <div class="row">
+        
+
+        <div class="col-lg-12">
+
+          <div class="card">
+            <div class="card-body">
+  
+              <!-- Table with stripped rows -->
+            
+              <div class="table-responsive">
+                <table class="table table-striped">
+                <thead class="text-center">
+                  <tr>
+                    <th scope="col">id#</th>
+                    <th scope="col">UserName</th>
+                    <th scope="col">email</th>
+                    <th scope="col">First_Name</th>
+                    <th scope="col">Last_Name</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Phone No</th>
+                    <th scope="col">is_verified</th>
+                    <th scope="col">created_at</th>
+                    
+
+                  </tr>
+                </thead>
+                <tbody>
+               {% if users %}
+               
+                {% for user in users %} 
+                  <tr>
+                    <th scope="row">{{user.id}}</th>
+                    <td>{{user.username}}</td> 
+                    <td>{{user.email}}</td>
+                    <td>{{user.first_name}}</td>
+                    <td>{{user.last_name}}</td>
+
+                {% if customer %}
+                   
+                    {% for detail in customer %}
+                      {% if user.id == detail.user.id %}
+                    <td>{{ detail.address }}</td>
+                    <td>{{ detail.phone }}</td>
+
+                {% if detail.is_verified == True %}
+                    <td> <spam class="bg-success text-light p-1 bold">{{ detail.is_verified }}</spam> </td>
+
+                    {% else %}
+                    <td><spam class="bg-danger text-light p-1 bold">{{ detail.is_verified }}</spam></td>
+                    {% endif %}
+
+
+                    <td>{{ detail.created_at }}</td>
+                    
+                      {% endif %}
+                    {% endfor %}
+
+                    {% else %}
+                    <td>No detail Found</td>
+                    {% endif %}    
+              
+
+                  </tr>
+                {% endfor %} 
+                {% else %}
+                <td>no User Found</td>
+               {% endif %}  
+                </tbody>
+              </table>
+            </div>
+              <!-- End Table with stripped rows -->
+
+            </div>
+          </div>
+
+          
+
+        </div>
+      </div>
+    </section>
+  </div>
+  </main><!-- End #main -->
+
+ 
+
+{% endblock %}

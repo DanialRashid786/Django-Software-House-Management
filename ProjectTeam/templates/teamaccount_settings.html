@@ -1,0 +1,93 @@
+{% extends 'basePTadmin.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+  .profile-pic {
+    max-width: 200px;
+    max-height: 200px;
+    margin: 0 auto;
+    border-radius: 50%;
+  }
+</style>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Account Settings</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'projectteam' %}">Home</a></li>
+        <li class="breadcrumb-item active">Account Setting</li>
+      </ol>
+    </nav>
+  </div>
+  <!-- End Page Title -->
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <li style="list-style: none;">
+      <div class="alert alert-success d-flex align-items-center" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use
+            xlink:href="#check-circle-fill" /></svg>
+        <div>
+          <b>{{message}}</b>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <section class="section dashboard">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="card card-body">
+          <br>
+          <a class="btn btn-warning" href="{% url 'projectteam' %}"> &#8592; Back to Profile</a>
+          <hr>
+          <h3 style="text-align: center">Account Settings</h3>
+          <hr>
+
+          {% if request.user.team.profileimage %}
+          <img class="profile-pic" src="{{ request.user.team.profileimage.url }}">
+          {% else %}
+          <img src="{% static 'assetsadmin/img/team.png' %}" alt="Image Not Set" class="rounded-circle img-fluid">
+          {% endif %}
+
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="card card-body">
+          <form method="POST" action="" enctype="multipart/form-data">
+            <br>
+            {% csrf_token %}
+
+            <div class="table-responsive">
+              <table class="table">
+                {% for field in form %}
+                <tr>
+                  <th class="align-top">{{ field.label_tag }}</th>
+                  <td>
+                    {% if field.field.widget.input_type == 'checkbox' %}
+                      <div class="form-check">
+                        {{ field }}
+                        {{ field.label_tag }}
+                      </div>
+                    {% else %}
+                      {{ field }}
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Update Information">
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<!-- End #main -->
+
+{% endblock %}

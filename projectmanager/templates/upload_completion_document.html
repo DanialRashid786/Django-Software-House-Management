@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Completion Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        @media screen and (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Upload Completion Document</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="document">Choose a File:</label>
+                <input type="file" id="document" name="document">
+            </div>
+            <button id="upload-button" type="submit" {% if documents_uploaded %}disabled{% endif %}>
+                {% if documents_uploaded %}Uploaded{% else %}Upload Completion Documents{% endif %}
+            </button>
+            
+        </form>
+
+        <div id="uploaded-files">
+            {% for document in project_documents %}
+            <p><a href="{{ document.documents.url }}" download="{{ document.document.name }}">{{ document.document.name }}</a></p>
+            {% empty %}
+                <p>No documents uploaded.</p>
+            {% endfor %}
+        </div>
+
+        <script>
+            // JavaScript code to disable the button after a successful upload
+            document.addEventListener('DOMContentLoaded', function() {
+                const uploadButton = document.getElementById('upload-button');
+                const uploadedFilesDiv = document.getElementById('uploaded-files');
+                const uploaded = {{ form.instance.documents|length }} > 0; // Check if documents have been uploaded
+            
+                if (uploaded) {
+                    uploadButton.disabled = true;
+                    uploadButton.textContent = 'Uploaded';
+                    uploadedFilesDiv.style.display = 'block'; // Show the uploaded files section
+                }
+            });
+            
+        </script>
+    </div>
+</body>
+</html>

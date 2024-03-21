@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<title>Aboutus</title>
+<section id="herocareer" class="d-flex align-items-center justify-content-center">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-xl-6 col-lg-8">
+          <h1>About Us<span>.</span></h1>
+        </div>
+      </div>
+    </div>
+</section><!-- End Hero -->
+
+
+<!-- ======= About Section ======= -->
+{% if about_entry %}
+
+<section id="about" class="about">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row">
+        <div class="col-lg-4 order-1 order-lg-2 justify-content-center" data-aos="fade-left" data-aos-delay="100">
+          <img src="{{ about_entry.image.url }}" class="img-fluid pt-4" alt="img">
+        </div>
+        
+        <div class="col-lg-8 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right" data-aos-delay="100">
+          <h3>{{ about_entry.title |safe|capfirst}}</h3>
+          <p class="fst-italic" style="text-align: justify;">
+            {{ about_entry.content |safe}}
+          </p>
+          <ul>
+         
+          
+            {% for sentence in about_entry.sentences %}
+                <li><i class="ri-check-double-line"></i>{{ sentence }}</li>
+            {% endfor %}
+          </ul>
+        
+        </div>
+      </div>
+
+    </div>
+  </section><!-- End About Section -->
+
+  {% else %}
+  <section id="about" class="about">
+    <div class="container" data-aos="fade-up">
+    <h4>No data found</h4>
+    </div>
+  </section>   
+  {% endif %}
+
+{% endblock %}

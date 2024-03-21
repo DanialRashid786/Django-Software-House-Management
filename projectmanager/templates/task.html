@@ -1,0 +1,117 @@
+{% extends 'basePMadmin.html' %}
+{% load static %}
+
+{% block content %}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Assign Task to Teams</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+                <li class="breadcrumb-item active">Tasks</li>
+            </ol>
+        </nav>
+    </div>
+    <!-- End Page Title -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <li style="list-style: none;">
+            <div class="alert alert-success d-flex align-items-center" role="alert">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use
+                        xlink:href="#check-circle-fill" /></svg>
+                <div>
+                    <b>{{message}}</b>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </div>
+    {% endif %} 
+
+    <section class="section dashboard">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-body">
+                    <form method="post" action="" class="form-table" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    <label for="team">Select Team:</label>
+                                    <select name="team" id="team" class="form-control" required>
+                                        {% if assigned_projects %}
+                                            {% for project_assignment in assigned_projects %}
+                                                <option value="{{ project_assignment.team.id }}">{{ project_assignment.team.user.username }} ({{ project_assignment.team.team_type }})</option>
+                                            {% empty %}
+                                                <option value="" disabled>No teams available</option>
+                                            {% endfor %}
+                                        {% else %}
+                                            <option value="" disabled>No teams available</option>
+                                        {% endif %}
+                                    </select>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="name">Task Name:</label>
+                                    <input type="text" name="name" id="name" class="form-control" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="description">Task Description:</label>
+                                    <textarea name="description" id="description" rows="4" class="form-control"
+                                        required></textarea>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="description">Requirement File:</label>
+                                    <input type="file" name="Requirement" id="">
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td>
+                                    <label for="description">Tags:</label>
+                                    
+                                     <input type="text" name="tags" id="name" class="form-control" required>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <label for="description">Category:</label>
+                                    
+                                     <input type="text" name="category" id="name" class="form-control" required>
+                                </td>
+                            </tr>
+
+                           
+                            <tr>
+                                <td>
+                                    <label for="deadline">Deadline:</label>
+                                    <input type="date" name="deadline" id="deadline" class="form-control" required>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <button type="submit" class="btn btn-primary">Assign Task</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<!-- End #main -->
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "baseattendance.html"%}
+
+    {% block content %}
+    <title>Attendance</title>
+
+    
+    <div class="global-container">
+        <div class="card login-form">
+        <div class="card-body">
+            <h3 class="card-title text-center">Mark Attendance </h3>
+            <div class="card-text text-center">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_table }}
+                    <button class="btn btn-success" type="submit">Submit</button>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+    </div>
+
+
+    {% endblock %}

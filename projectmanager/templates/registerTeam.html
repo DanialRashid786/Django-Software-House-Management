@@ -1,0 +1,73 @@
+{% extends 'basePMadmin.html' %} 
+{% load static %}
+
+{% block content %}  
+<title>Add New Team</title>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Add New Team</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+
+
+    {% if messages %}  
+        <ul>   
+            {% for message in messages %}  
+                <li>{{ message }}</li>  
+                {% endfor %}  
+        </ul>   
+    {% endif %}  
+    
+<div class="container">
+
+<div class="row border border-2 p-3 border-secondary" style="background-color: white; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right" data-aos-delay="100">
+
+        <h1>Registration Form</h1>  
+
+        <form method="post" action=""  role="form" enctype="multipart/form-data" >  
+        {% csrf_token %}  
+            <table>  
+                {{ form2.as_table }}  
+                <tr>  
+                    <td></td>  
+                    <td>
+                        <input type="submit" name="submit" value="Register" />
+                    
+                        <a href="{% url 'projectmanagers' %}"> <button type="button" class="btn btn-primary m-4">Back</button> </a> <br><br>
+                    </td> 
+                    
+                    
+                </tr>  
+            </table>  
+        </form>  
+    </div> 
+
+    <div class="col-lg-6 order-1 order-lg-2" data-aos="fade-left" data-aos-delay="100">
+    
+        <img src="{% static 'assetsadmin/img/manager.png' %}" class="img-fluid pt-5 mx-auto d-block" alt="">
+
+        
+        
+    </div>
+    
+    
+</div>
+
+<br><br> 
+</div>
+
+</main><!-- End #main -->
+{% endblock %}
+
+
+
+
+

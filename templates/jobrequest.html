@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<title>Career Request form</title>
+<section id="herorequest" class="d-flex align-items-center justify-content-center">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-xl-6 col-lg-8">
+          <h1>{{career.JobTitle}}</h1>
+          <h1>Request Form<span>.</span></h1>
+        </div>
+      </div>
+    </div>
+</section><!-- End Hero -->
+<br>
+{% comment %} ///////display message//////////////// {% endcomment %}
+
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="alert alert-success d-flex align-items-center" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+                    <div>
+                        <b>{{ message }}</b>
+                    </div>
+                </div>
+            {% elif message.tags == 'warning' %}
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                    <div>
+                        <b>{{ message }}</b>
+                    </div>
+                </div>
+            {% elif message.tags == 'error' %}
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                    <div>
+                        <b>{{ message }}</b>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info d-flex align-items-center" role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+                    <div>
+                        <b>{{ message }}</b>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %} 
+  {% comment %}////////display message end  /////////////{% endcomment %}
+
+<section class="servicesdetail" id="features" class="features">
+
+    <div class="container" data-aos="fade-up">
+   
+       <div class="row border border-warning p-5">
+           <div class="col-lg-4 order-1 order-lg-2 d-flex align-items-center" data-aos="fade-left" data-aos-delay="100">
+             <img src="{% static 'assets/img/request.jpg' %}" class="img-fluid w-100" alt="">
+           </div>
+           <div class="col-lg-8 pt-4 pt-lg-0 order-2 order-lg-1 content" data-aos="fade-right" data-aos-delay="100">
+
+            <form action="{% url 'jobrequest' career.id %}" method="post" role="form" enctype="multipart/form-data" class="job-request-form">
+              {% csrf_token %}
+              <h1>Request Form</h1>
+          
+              <div class="form-group">
+                  <label for="id_Name">Name:</label>
+                  <input type="text" name="Name" id="id_Name" class="form-control" required>
+              </div>
+              <br>
+          
+              <div class="form-group">
+                  <label for="id_Email">Email:</label>
+                  <input type="email" name="Email" id="id_Email" class="form-control" required>
+              </div>
+          <br>
+              <div class="form-group">
+                  <label for="id_Phone_number">Phone Number:</label>
+                  <input type="tel" name="Phone_number" id="id_Phone_number" class="form-control" required>
+              </div>
+          <br>
+              <div class="form-group">
+                  <label for="id_About">About:</label>
+                  <textarea name="About" id="id_About" class="form-control" required></textarea>
+              </div>
+          <br>
+              <div class="form-group">
+                  <label for="id_CV">CV:</label>
+                  <input type="file" name="CV" id="id_CV" class="form-control-file" accept=".pdf, .doc, .docx" required>
+
+              </div>
+          <br>
+              <button type="submit" class="btn btn-warning">Submit</button>
+          </form>
+           </div>
+        </div>
+       
+   
+       </div>
+   
+   </div>
+   
+   
+   </section>
+
+{% endblock %}

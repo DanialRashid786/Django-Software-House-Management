@@ -1,0 +1,117 @@
+{% extends 'baseadmin.html' %} {% load static %} {% block content %}
+<title>Add Career</title>
+
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Add Careers</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+ {% comment %} ///////display message//////////////// {% endcomment %}
+ {% if messages %}
+ <div class="messages">
+ {% for message in messages %}
+ <li style="list-style: none;">
+   <div class="alert alert-success d-flex align-items-center" role="alert">
+     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+     <div>
+       <b>{{message}}</b>
+     </div>
+   </div>
+ </li>
+ {% endfor %}
+ </div>
+ {% endif %}  
+ 
+    {% comment %} <a href=""> <button type="button" class="btn btn-primary">Post New Job</button> </a> <br><br> {% endcomment %}
+
+    <section class="section profile">
+      <div class="row">
+
+        <form action="" method="post" role="form" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="{{ formcareer.JobTitle.id_for_label }}" class="form-label">Job Title</label>
+                            {{ formcareer.JobTitle }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ formcareer.JobDetail.id_for_label }}" class="form-label">Job Detail</label>
+                            {{ formcareer.JobDetail }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ formcareer.JobDescription.id_for_label }}" class="form-label">Job Description</label>
+                            {{ formcareer.JobDescription }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ formcareer.JobDescriptionImage.id_for_label }}" class="form-label">Job Description Image</label>
+                            {{ formcareer.JobDescriptionImage }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="{{ formcareer.JobStatus.id_for_label }}" class="form-label">Career Status</label>
+                            {{ formcareer.JobStatus }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ formcareer.MinimumExperience.id_for_label }}" class="form-label">Minimum Experience</label>
+                            {{ formcareer.MinimumExperience }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ formcareer.JobCategory.id_for_label }}" class="form-label">Job Category</label>
+                            {{ formcareer.JobCategory }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ formcareer.Department.id_for_label }}" class="form-label">Department</label>
+                            {{ formcareer.Department }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ formcareer.JobType.id_for_label }}" class="form-label">Job Type</label>
+                            {{ formcareer.JobType }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ formcareer.Location.id_for_label }}" class="form-label">Location</label>
+                            {{ formcareer.Location }}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        
+                        <div class="mb-3">
+                            <label for="{{ formcareer.Responsibilities.id_for_label }}" class="form-label">Responsibilities</label>
+                            {{ formcareer.Responsibilities }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ formcareer.ResponsibilitiesImage.id_for_label }}" class="form-label">Responsibilities Image</label>
+                            {{ formcareer.ResponsibilitiesImage }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="">Job Requirements</label>
+                            {{ formcareer.Requirements }}
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- You can add additional rows and columns for more fields if needed -->
+            </div>
+        
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+        
+
+        
+      </div>
+    </section>
+
+  </main><!-- End #main -->
+
+{% endblock %}

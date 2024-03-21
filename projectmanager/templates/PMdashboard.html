@@ -1,0 +1,282 @@
+{% extends 'basePMadmin.html' %}
+{% load static %}
+{% block content %}
+<title>Project Manager Dashboard</title>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Project Manager Dashboard</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+        <li class="breadcrumb-item active">Project Manager Dashboard</li>
+      </ol>
+    </nav>
+  </div>
+
+  <!-- Display Messages -->
+  {% if messages %}
+  <div class="messages">
+    {% for message in messages %}
+    <li style="list-style: none;">
+      <div class="alert alert-success d-flex align-items-center" role="alert">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use
+            xlink:href="#check-circle-fill" /></svg>
+        <div>
+          <b>{{ message }}</b>
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+
+  <section class="section dashboard">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+        <!-- Column 1 -->
+        <div class="col">
+          <div class="card info-card sales-card">
+            <div class="card-body">
+              <h5 class="card-title">Total Projects</h5>
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-cast"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>{{ assigned_projects_count }}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2 -->
+        <div class="col">
+          <div class="card info-card revenue-card">
+            <div class="card-body">
+              <h5 class="card-title">Completed Projects</h5>
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-ui-checks"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>{{completedproject}}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 3 -->
+        <div class="col">
+          <div class="card info-card customers-card">
+            <div class="card-body">
+              <h5 class="card-title">Total Team Members</h5>
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-cast"></i>
+                </div>
+                <div class="ps-3">
+                  <h6>{{total_team_members}}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        
+        <!-- Column 4 -->
+   <div class="col-lg-12">
+    <div class="card info-card customers-card">
+      <div class="card-body">
+        <h5 class="card-title">Team Performance</h5>
+        <div class="d-flex align-items-center">
+          <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+            <i class="bi bi-cast"></i>
+          </div>
+          <div class="ps-3">
+            <h4 class="mb-3">Select Project to View Team Performance:</h4>
+            <form method="post" class="mb-3">
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="project" class="form-label">Select Project:</label>
+                <select name="project" id="project" class="form-select">
+                  {% for project in projects %}
+                  <option value="{{ project.id }}"
+                    {% if project.id == selected_project.id %} selected {% endif %}>
+                    {{ project.project_title }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">View Team Performance</button>
+            </form>
+            {% if team_performance %}
+            <h5 class="mt-4">Team Performance for Project: {{ selected_project.project_title }}</h5>
+            <p>Tasks To Do: <span style="color:orange;font-weight:bolder"> {{ team_performance.todo }} </span>
+            </p>
+            <p>Tasks In Progress: <span style="color:blue;font-weight:bolder">{{ team_performance.in_progress }}</span>
+            </p>
+            <p>Tasks Completed: <span style="color:green;font-weight:bolder">{{ team_performance.completed }}</span>
+            </p>
+
+            <p>To Review: <span style="color:black;font-weight:bolder">{{ team_performance.to_review }}</span>
+            </p>
+
+            <p>Needs Revision: <span style="color:red;font-weight:bolder">{{ team_performance.needs_revision }}</span>
+            </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+        
+
+
+
+  
+
+
+        <!-- Column 5 -->
+        <div class="col-lg-6">
+          <div class="card info-card sales-card" style="height: 300px;">
+            <div class="card-body" style="overflow-y: auto;">
+              <h5 class="card-title">Team Type Distribution</h5>
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-cast"></i>
+                </div>
+                <div class="ps-3">
+                  {% for team_count in team_counts %}
+                  <p><span style="font-weight:bolder">{{ team_count.team_type }}:</span> <span style="color:blue;font-weight:bolder">{{ team_count.count }}</span></p>
+                 
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+        <!-- Column 6 -->
+        <div class="col-lg-6">
+          <div class="card info-card sales-card">
+            <div class="card-body">
+              <h5 class="card-title">Teams</h5>
+              <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-cast"></i>
+                </div>
+                <div class="ps-3">
+                  <canvas id="teamTypeChart" width="200" height="200"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+<!-- Column 4 -->
+
+
+ <!-- Column 6 -->
+ <div class="col-lg-6" style="max-height: 300px; overflow-y: auto;">
+  <div class="card shadow info-card">
+    <div class="card-body">
+      <h5 class="card-title text-primary">Teams Projects</h5>
+      <hr class="my-4">
+
+      <ul class="list-group">
+        {% for team in team_completed_projects %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span class="fw-bold">{{ team.team_name }}({{team.team_type}})</span>
+          <span class="badge bg-success rounded-pill">{{ team.completed_projects_count }}</span>
+        </li>
+      
+        
+        {% empty %}
+        <li class="list-group-item text-muted">No teams with completed projects.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+      
+
+      </div>
+    </div>
+
+   
+  </section>
+
+</main>
+
+<!-- JavaScript for Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Prepare data for Chart.js
+  var teamTypes = [];
+  var teamCounts = [];
+
+  {% for team_count in team_counts %}
+  teamTypes.push("{{ team_count.team_type }}");
+  teamCounts.push({{ team_count.count }});
+  {% endfor %}
+
+  // Get the canvas element
+  var ctx = document.getElementById('teamTypeChart').getContext('2d');
+
+  // Initialize Chart.js chart
+  var teamTypeChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: teamTypes,
+      datasets: [{
+        label: 'Team Count',
+        data: teamCounts,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+
+
+
+
+
+{% endblock %}

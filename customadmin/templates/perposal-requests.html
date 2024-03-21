@@ -1,0 +1,128 @@
+{% extends 'baseadmin.html' %} {% load static %} {% block content %}
+<title>Custmers Project Requests</title>
+
+  <main id="main" class="main">
+  <div class="container">
+    <div class="pagetitle">
+      <h1>Customers Project Requests</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+          <li class="breadcrumb-item active">ProjectRequests</li>
+        
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+  {% comment %} ///////display message//////////////// {% endcomment %}
+  {% if messages %}
+  <div class="messages">
+  {% for message in messages %}
+  <li style="list-style: none;">
+    <div class="alert alert-success d-flex align-items-center" role="alert">
+      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+      <div>
+        <b>{{message}}</b>
+      </div>
+    </div>
+  </li>
+  {% endfor %}
+  </div>
+  {% endif %}  
+  
+  {% comment %}////////display message end  /////////////{% endcomment %}
+
+  <section class="section">
+    <div class="row">
+      
+
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+  
+      
+          
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead class="text-center">
+                    <tr>
+                    <th scope="col">Customer Name</th>
+                    <th scope="col">Servicetype</th>
+                    <th scope="col">Phone_number</th>
+                    <th scope="col">project_title</th>
+                    <th scope="col">project Budget</th>
+                    <th scope="col">RF</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Status</th>
+
+       
+                    <th scope="col">Update Status</th>
+                    
+                    
+                    </tr>
+                  </thead>
+                  <tbody>
+                {% if obj %}
+                
+                   
+                    {% for i in obj %} 
+                  <tr>
+                    <th scope="row">{{i.customer}}</th>
+                    <td>{{i.servicetype}}</td>
+                    <td>{{i.phone_number}}</td>
+                    <td>{{i.project_title}}</td>
+                    <td>Rs:{{i.Project_Budget}}</td>
+
+                    <td> 
+                      {% if i.requirementfile and i.get_file_size %}
+                     
+                      <a href="/media/{{i.requirementfile}}">{{i.get_file_size}}</a> 
+                      {% else %}
+                      <p>No Requirenment file Found</p>
+                      {% endif %} 
+                    </td>
+                    <td>{{i.created_at}}</td>
+                    
+
+{% if i.status == "Accepted" %}
+    <td style="color:white"><strong style="border:black;background-color:green;padding:4px">{{i.status}}</strong></td>
+{% elif i.status == "Rejected" %}
+    <td style="color:white;"><strong style="border:black;background-color:red;padding:4px">{{i.status}}</strong></td>
+{% else %}
+    <td style="color:white;"><strong style="border:black;background-color:black;padding:4px;">{{i.status|default:'Pending'}}</strong></td>
+{% endif %}
+                    
+                    <td> <a href="{% url 'status' i.id %}"> <button  type="button" class="btn btn-primary class="font-size:5px"">Update Status</button></a> </td>
+
+                    
+                  </tr>
+                {% endfor %} 
+
+                {% else %}
+                <td>No Data Found</td>
+                {% endif %} 
+                  </tbody>
+                </table>
+              </div>
+  
+            </div>
+          </div>
+
+          
+
+        </div>
+      </div>
+    </section>
+  
+     
+
+
+
+
+</div>
+  </main><!-- End #main -->
+
+ 
+
+{% endblock %}

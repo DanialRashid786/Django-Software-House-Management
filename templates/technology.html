@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<title>Technologies</title>
+<section id="herocareer" class="d-flex align-items-center justify-content-center">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="150">
+        <div class="col-xl-6 col-lg-8">
+          <h1 style="font-size: 40px;line-height: 50px">Technologies<span>.</span></h1>
+        </div>
+      </div>
+    </div>
+</section><!-- End Hero -->
+
+<main id="main">
+
+<!-- =======  Section ======= -->
+
+
+        <section id="grid_2" class="container-fluid blk__grid content_block block_2 default hover_boxes" style="">
+            <div class="color-bg" style="background-color: #f8f8f8;"></div>
+            <div class="inner" style="">
+                <div class="intro_text text-center"> <!-- Add the class 'text-center' here -->
+                    <h2 class="block_title">Our Preferred Technologies</h2>
+                    <h3 class="block_title_intro">We will objectively recommend the best tech for your requirements across your entire data stack.</h3>
+                </div>
+                <br>
+                <div class="grid_container default cols-4">
+                    <!-- Grid item 1 -->
+                    
+
+            {% for data in technology %}
+            
+                <div class="grid_item">
+                    <div class="grid_item_content image_content">
+                        <div id="image_content_3M2TQld8ZWwo0ca" class="" style="text-align: center;">
+
+                                <img src="{{data.image_url|safe}}" alt="Fivetran" style="width: 100%;">
+                        </div>
+                    </div>
+                    <div class="hover_content">
+                        <h3>{{data.title|safe}}</h3>
+                        <p>{{data.description|safe}}</p>
+
+                        {% if data.Site_url %}
+                        
+                        
+                        <a href="{{data.Site_url|safe}}" class="link_text" target="_blank">Visit their site &gt;</a>
+                        {% else %}
+                        
+                        {% endif %}
+                    </div>
+                </div>
+
+            {% endfor %}        
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+        
+                    
+                </div>
+            </div>
+        </section>
+        
+
+
+
+<style>
+
+    .link_text {
+        color: white;
+        font-weight: bold;
+    }
+    h2 {
+        text-align: center;
+        color:#ffb218;
+        font-weight: bolder;
+        font-size:45px;
+    }
+
+    /* Responsive styles for the h2 element */
+@media screen and (max-width: 768px) {
+    /* For screens with a maximum width of 768px (e.g., tablets and mobiles) */
+    h2 {
+        font-size: 28px; /* Reduce font size for smaller screens */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* For screens with a maximum width of 480px (e.g., small mobiles) */
+    h2 {
+        font-size: 24px; /* Further reduce font size for smaller screens */
+    }
+}
+    h3 {
+        font-family: Inter,Helvetica,Arial,sans-serif;
+        display: block;
+        font-size: 1.17em;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        font-weight: bold;
+    }
+
+    /* CSS for 4 columns in one row (large screens) */
+.grid_container.default.cols-4 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 5px;
+
+}
+
+/* CSS for each grid item with box effect */
+.grid_item {
+    flex-basis: calc(25% - 20px); /* Adjust the percentage as needed */
+    margin-bottom: 20px;
+    
+    box-shadow: 0 5px 50px rgba(0, 0, 0, 0.080);
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    height: 300px;
+}
+
+/* CSS for responsiveness - 1 column in one row on mobile screens */
+@media only screen and (max-width: 576px) {
+    .grid_container.default.cols-4 {
+        justify-content: center; /* Center align the items in mobile screens */
+    }
+    .grid_item {
+        flex-basis: calc(100% - 20px); /* Adjust the percentage as needed for mobile screens */
+    }
+}
+
+   
+    
+    
+    /* CSS for the image within the box effect */
+    .grid_item img {
+        max-width: 100%;
+        height: auto;
+        transition: transform 0.3s ease; /* Add a smooth transition effect */
+        padding: 60px;
+    }
+    
+    /* CSS for the hover effect on the image */
+    .grid_item:hover img {
+        transform: scale(1.1); /* Enlarge the image slightly on hover */
+    }
+    
+    /* CSS for the hover content */
+    .hover_content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ffaa00;
+        padding:20px;
+        display: flex;
+        color:white;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        opacity: 0; /* Hide the hover content initially */
+        transition: opacity 0.3s ease; /* Add a smooth transition effect for opacity */
+    }
+    
+    /* CSS to show hover content on hover */
+    .grid_item:hover .hover_content {
+        opacity: 1; /* Show the hover content on hover */
+    }
+    
+
+    
+</style>
+  
+</main>  
+{% endblock %}

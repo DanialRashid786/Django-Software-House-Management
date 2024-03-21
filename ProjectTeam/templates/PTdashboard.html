@@ -1,0 +1,194 @@
+{% extends 'basePTadmin.html' %} {% load static %} {% block content %}
+<title>Project Team Dashboard</title>
+
+<main id="main" class="main">
+  <div class="pagetitle">
+    <h1>Project Team Dashboard</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+        <li class="breadcrumb-item active">Project Team Dashboard</li>
+      </ol>
+    </nav>
+  </div>
+  <!-- End Page Title -->
+
+{% comment %} ///////display message//////////////// {% endcomment %}
+{% if messages %}
+<div class="messages">
+{% for message in messages %}
+<li style="list-style: none;">
+  <div class="alert alert-success d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+    <div>
+      <b>{{message}}</b>
+    </div>
+  </div>
+</li>
+{% endfor %}
+</div>
+{% endif %}  
+
+{% comment %}////////display message end  /////////////{% endcomment %}
+
+
+  <section class="section dashboard">
+{% comment %} /////*******row 1 and 3 columns {% endcomment %}
+ {% comment %} /////*******row 1 and 3 columns {% endcomment %}
+ <div class="row">
+
+  <div class="col-xxl-2 col-md-4">
+    <div class="card info-card sales-card">
+    
+      <div class="card-body">
+        <h5 class="card-title">Total Projects</h5>
+
+        <div class="d-flex align-items-center">
+          <div
+            class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+
+            <i class="bi bi-cast"></i>
+          </div>
+          <div class="ps-3">
+            <h6>{{total_projects}}</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} col 2 {% endcomment %}
+
+  <div class="col-xxl-2 col-md-4">
+    <div class="card info-card revenue-card">
+        
+      <div class="card-body">
+        <h5 class="card-title">Project In_progress</h5>
+
+        <div class="d-flex align-items-center">
+          <div
+            class="card-icon rounded-circle d-flex align-items-center justify-content-center"
+          >
+            <i class="bi bi-ui-checks"></i>
+          </div>
+          <div class="ps-3">
+            <h6>3</h6>
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+  </div>
+
+  {% comment %} col 3 {% endcomment %}
+
+  <div class="col-xxl-2 col-md-4">
+    <div class="card info-card customers-card">
+
+      <div class="card-body">
+        <h5 class="card-title">Total Tasks</h5>
+
+        <div class="d-flex align-items-center">
+          <div
+            class="card-icon rounded-circle d-flex align-items-center justify-content-center"
+          >
+            <i class="bi bi-cast"></i>
+          </div>
+          <div class="ps-3">
+            <h6>15</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% comment %} /////*******End row 1 and 3 columns {% endcomment %}
+
+{% comment %} ///////////////////row 2 and 3 col/////////////////// {% endcomment %}
+
+
+{% comment %} /////*******row 1 and 3 columns {% endcomment %}
+<div class="row">
+
+  <div class="col-xxl-2 col-md-4">
+    <div class="card info-card sales-card">
+    
+      <div class="card-body">
+        <h5 class="card-title">Completed Project</h5>
+
+        <div class="d-flex align-items-center">
+          <div
+            class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+
+            <i class="bi bi-cast"></i>
+          </div>
+          <div class="ps-3">
+            <h6>2</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} col 2 {% endcomment %}
+
+  <div class="col-xxl-2 col-md-4">
+    <div class="card info-card revenue-card">
+        
+      <div class="card-body">
+        <h5 class="card-title">Todo</h5>
+
+        <div class="d-flex align-items-center">
+          <div
+            class="card-icon rounded-circle d-flex align-items-center justify-content-center"
+          >
+            <i class="bi bi-ui-checks"></i>
+          </div>
+          <div class="ps-3">
+            <h6>1</h6>
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+  </div>
+
+  {% comment %} col 3 {% endcomment %}
+
+  <div class="col-xxl-2 col-md-4">
+    <div class="card info-card customers-card">
+
+      <div class="card-body">
+        <h5 class="card-title">Done tasks</h5>
+
+        <div class="d-flex align-items-center">
+          <div
+            class="card-icon rounded-circle d-flex align-items-center justify-content-center"
+          >
+            <i class="bi bi-cast"></i>
+          </div>
+          <div class="ps-3">
+            <h6>2</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% comment %} /////*******End row 2 and 3 columns {% endcomment %}
+
+
+
+  </section>
+</main>
+<!-- End #main -->
+
+
+
+{% endblock %}

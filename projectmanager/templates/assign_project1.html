@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        /* Center the form */
+        .center-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa; /* Set background color */
+        }
+        
+        /* Style the form box */
+        .form-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        
+        /* Style the project title heading */
+        .project-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+  <div class="center-container">
+    <div class="form-box">
+      {% if messages %}
+<div class="messages">
+{% for message in messages %}
+<li style="list-style: none;">
+  <div class="alert alert-danger d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+    <div>
+      <b>{{message}}</b>
+    </div>
+  </div>
+</li>
+{% endfor %}
+</div>
+{% endif %}
+      <form method="post" action="">
+        {% csrf_token %}
+        <h2 class="project-title">Assign Project "{{ project.project_title }}"</h2>
+        <div class="form-group">
+          <label for="teams">Select Teams:</label>
+          <br>
+        {% if teams %}
+        
+         
+          {% for team in teams %}
+            <div class="form-check">
+              <input type="checkbox" name="teams" value="{{ team.id }}" id="team_{{ team.id }}"
+    {% if team.id in assigned_teams %} checked{% endif %}>
+              <label class="form-check-label" for="team_{{ team.id }}">{{ team.user }} "{{team.team_type}}"</label>
+            </div>
+          {% endfor %}
+         
+          {% else %}
+          <h6>no data Found</h6>
+        {% endif %} 
+
+          
+        </div>
+        <br>
+        <input type="submit" class="btn btn-primary" value="Assign Project">
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,1573 @@
+  {% extends 'basePMadmin.html' %}
+  {% load static %}
+  {% block content %}
+  <title>Project Cards</title>
+  
+  <main id="main" class="main">
+    <div class="pagetitle">
+      <h1>Project Cards</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+          <li class="breadcrumb-item active">Projects Cards</li>
+        </ol>
+      </nav>
+    </div>
+    <!-- End Page Title -->
+    <div class="nk-block-des text-soft"><p>You have total {{total_projects}} projects.</p></div>
+  
+    <section class="section">
+      <div class="container-fluid" style="overflow-x:auto;">
+        {% if messages %}
+          <div class="messages">
+            {% for message in messages %}
+              <li style="list-style: none;">
+                <div class="alert alert-success d-flex align-items-center" role="alert">
+                  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
+                    <use xlink:href="#check-circle-fill"/>
+                  </svg>
+                  <div>
+                    <b>{{ message }}</b>
+                  </div>
+                </div>
+              </li>
+            {% endfor %}
+          </div>
+        {% endif %}
+  
+
+
+        <div class="nk-block">
+          <div class="row g-gs">
+
+
+
+{% for i in projectcard %}
+
+
+
+
+
+<!-- Inside your modal form -->
+<div class="modal fade" id="updatestatus" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Update Project Status</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <!-- Django form for updating task status -->
+              <form method="post" action="{% url "updateprojectstatus" %}">
+                {% csrf_token %}
+                <input type="hidden" value="{{ i.id }}" id="taskId" name="taskid">
+            
+                <div class="mb-3">
+                    <label for="status" class="form-label">Project Status</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="" {% if not i.projectstatus %} selected {% endif %}></option>
+                        <option value="In Progress" {% if i.projectstatus == 'In Progress' %} selected {% endif %}>In Progress</option>
+                        <option value="Complete" {% if i.projectstatus == 'Complete' %} selected {% endif %}>Complete</option>
+                    </select>
+                </div>
+            
+                <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+              
+          </div>
+      </div>
+  </div>
+</div>
+
+{% comment %} <input type="hidden" id="taskId" name="taskId"> {% endcomment %}
+
+
+
+
+
+
+
+            <div class="col-sm-6 col-lg-4 col-xxl-3 pb-3">
+              <div class="card card-bordered h-100">
+                <div class="card-inner">
+                  <div class="project">
+                    <div class="project-head">
+                      <a href="{% url "Kanbanboard" i.id i.project_title %}" class="project-title">
+                        <div class="user-avatar sq bg-purple">
+                          <span>{{ i.project_title|first }}</span>
+                        </div>
+                        <div class="project-info">
+                          <h6 class="title">{{i.project_title|safe}}</h6>
+                          <span class="sub-text">{{i.servicetype|safe}}</span>
+                        </div>
+                      </a>
+                      <div class="drodown">
+                        <a href="#" class="dropdown-toggle btn btn-sm btn-icon btn-trigger mt-n1 me-n1"
+                           data-bs-toggle="dropdown">
+                          <em class="icon ni ni-more-h"></em>
+                        </a>
+
+
+                        <div class="dropdown-menu dropdown-menu-end">
+                          <ul class="link-list-opt no-bdr">
+                            <li><a href="apps-kanban.html"><em class="icon ni ni-eye"></em><span>View Project</span></a></li>
+                            <li><a href="#"><em class="icon ni ni-check-round-cut"></em><span>
+                              <button type="button" class="btn btn-sm btn-primary" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#updatestatus" 
+                                            data-task-id="{{ i.id }}">
+                                          Update
+                                    </button>
+                            </span></a></li>
+                          </ul>
+                        </div>
+
+
+
+                      </div>
+                    </div>
+                    <div class="project-details">
+                      <p style="text-align: justify;">{{i.ShortDesc|safe}}</p>
+                      
+                    </div>
+                    <div class="project-progress">
+                      <div class="project-progress-details">
+                   
+                    {% if not i.all_teams_completed %}    
+                       <a href="{% url "assign_task" i.id %}"><div class="project-progress-task">  <i class="bi bi-plus-circle-dotted"> </i><span>{{ i.tasks.count }} Tasks</span></div> </a> 
+
+                    {% else %}
+                    <div class="project-progress-task">  <i class="bi bi-plus-circle-dotted"> </i><span>{{ i.tasks.count }} Tasks</span></div> 
+                    {% endif %}  
+                  
+                    
+
+                        <div class="project-progress-percent">{{ i.completion_percentage|floatformat:0 }} %</div>
+                      </div>
+                      <div class="progress progress-pill progress-md bg-light">
+                        <div class="progress-bar" data-progress="{{ i.completion_percentage }}" style="width: {{ i.completion_percentage }}%;"></div>
+                      </div>
+                    </div>
+                    <div class="project-meta">
+                      <ul class="project-users g-1">
+                  
+
+                {% if i.projectassignment_set.all %}
+                
+               
+                    {% for team in i.projectassignment_set.all %}
+
+                        {% comment %} {% for team in i.project.assigned_projects_team.all|slice:":2" %} {% endcomment %}
+                      <li style="list-style: none;">
+                        
+                        {% if forloop.counter <= 2 %}
+                        <div class="user-avatar sm bg-blue">
+
+                          {% if team.team.profileimage %}
+                             <img class="w-100 h-100" src="{{ team.team.profileimage.url }}" alt="{{ team.user.username }}">
+                          {% else %}
+                          <img class="w-100 h-100" src="https://as2.ftcdn.net/v2/jpg/02/15/84/43/1000_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg" alt="Image Not Set" class="rounded-circle" alt="{{ team.user.username }}">
+                          {% endif %}
+                            
+
+                        </div>
+                    {% elif forloop.counter == 3 %}
+                        <div class="user-avatar bg-light sm">
+                            <span style="color: black">{{ forloop.parentloop.last|yesno:""|default:forloop.parentloop.counter0 }}</span>
+                        </div>
+                    {% endif %}
+                        
+                      </li>
+        {% endfor %}
+
+        
+        <div class="user-avatar sm" style="background-color: lightgray; padding: 5px;">
+          <span style="color: black">{{ i.projectassignment_set.all|length }}</span>
+      </div>
+        {% else %}
+        Not Assigned
+        {% endif %}
+                        {% comment %} <li style="list-style: none;"><div class="user-avatar sm bg-blue"><img src="images/avatar/b-sm.jpg" alt=""></div></li>
+                        <li style="list-style: none;"><div class="user-avatar bg-light sm"><span style="color:black">+12</span></div></li> {% endcomment %}
+                      </ul>
+
+
+                      {% comment %} <span class="badge badge-dim bg-warning"><em class="icon ni ni-clock"></em><span>{{ i.remaining_days }} Days Left</span></span> {% endcomment %}
+      {% if i.projectassignment_set.all %}                
+            {% if not i.all_teams_completed %}            
+                      {% if i.remaining_days == 1  %}
+                      <span class="badge badge-danger custom-badge">
+                          <em class="icon ni ni-clock"></em>
+                          <span style="color:red">Due Tomorrow</span>
+                      </span>
+                  {% elif i.remaining_days > 1  %}
+                      <span class="badge badge-dim bg-warning">
+                          <em class="icon ni ni-clock"></em>
+                          <span>{{ i.remaining_days }} Days Left</span>
+                      </span>
+                  
+                  
+                 
+
+                  {% else %}
+                      <span class="badge badge-secondary">
+                          <em class="icon ni ni-clock"></em>
+                          <span style="color:red">Overdue</span>
+                      </span>
+                  {% endif %}
+
+          {% else %}
+            
+            <span class="badge badge-primary">
+              <em class="icon"></em>
+              <span style="color:green">Completed</span>
+          </span>
+
+
+            {% endif %}
+{% endif %}
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+{% endfor %}
+
+
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+    </section>
+  
+  </main>
+  <!-- End #main -->
+  
+
+  <style>
+
+    
+
+    .custom-badge {
+      background-color: #ffcccc; /* light red background color */
+      /* Add any additional styles as needed */
+  }
+
+  .custom-badge2{
+    background-color: #ccffcc; /* light red background color */
+      /* Add any additional styles as needed */
+  }
+
+    .user-card .user-avatar.d-none {
+      margin-right: 1rem
+  }
+  
+  .user-card .user-avatar.d-none+.user-info,.user-card .user-avatar.d-none+.user-name {
+      margin-left: 0
+  }
+  
+  .user-avatar-xl,.user-avatar.xl {
+      height: 110px;
+      width: 110px;
+      font-size: 40px;
+      font-weight: 400
+  }
+  
+  .user-avatar-xl .status,.user-avatar.xl .status {
+      bottom: 9px;
+      right: 9px
+  }
+  
+  .user-avatar-lg,.user-avatar.lg {
+      height: 80px;
+      width: 80px;
+      font-size: 28px;
+      font-weight: 400
+  }
+  
+  .user-avatar-lg .status,.user-avatar.lg .status {
+      bottom: 5px;
+      right: 5px
+  }
+  
+  .user-avatar-md,.user-avatar.md {
+      height: 60px;
+      width: 60px;
+      font-size: 18px
+  }
+  
+  .user-avatar-md .status,.user-avatar.md .status {
+      bottom: 2px;
+      right: 2px
+  }
+  
+  .user-avatar-sm,.user-avatar.sm {
+      height: 32px;
+      width: 32px;
+      font-size: 12px
+  }
+  
+  .user-avatar-sm .status,.user-avatar.sm .status {
+      bottom: -2px;
+      right: -2px
+  }
+  
+  .user-avatar-xs,.user-avatar.xs {
+      height: 26px;
+      width: 26px;
+      font-size: 9px;
+      font-weight: 700
+  }
+  
+  .user-avatar-xs .status,.user-avatar.xs .status {
+      bottom: -2px;
+      right: -2px
+  }
+  
+  .user-avatar[class*=-blue-dim] {
+      color: #559bfb
+  }
+  
+  .user-avatar[class*=-azure-dim] {
+      color: #1676fb
+  }
+  
+  .user-avatar[class*=-indigo-dim] {
+      color: #2c3782
+  }
+  
+  .user-avatar[class*=-purple-dim] {
+      color: #816bff
+  }
+  
+  .user-avatar[class*=-pink-dim] {
+      color: #ff63a5
+  }
+  
+  .user-avatar[class*=-orange-dim] {
+      color: #ffa353
+  }
+  
+  .user-avatar[class*=-teal-dim] {
+      color: #20c997
+  }
+  
+  .user-avatar[class*=-primary-dim] {
+      color: #6576ff
+  }
+  
+  .user-avatar[class*=-secondary-dim] {
+      color: #364a63
+  }
+  
+  .user-avatar[class*=-success-dim] {
+      color: #1ee0ac
+  }
+  
+  .user-avatar[class*=-info-dim] {
+      color: #09c2de
+  }
+  
+  .user-avatar[class*=-warning-dim] {
+      color: #f4bd0e
+  }
+  
+  .user-avatar[class*=-danger-dim] {
+      color: #e85347
+  }
+  
+  .user-avatar[class*=-dark-dim] {
+      color: #1f2b3a
+  }
+  
+  .user-avatar[class*=-gray-dim] {
+      color: #8091a7
+  }
+  
+  .user-avatar[class*=-lighter] {
+      color: #8094ae
+  }
+  
+  .user-avatar[class*=-light] {
+      color: #526484
+  }
+  
+  
+  
+  
+  .user-card {
+      display: flex;
+      align-items: center
+  }
+  
+  .user-card-wrap {
+      padding-top: 1.125rem;
+      padding-bottom: 1.125rem
+  }
+  
+  .user-card .user-info {
+      color: #8094ae
+  }
+  
+  .user-card-menu {
+      position: absolute;
+      right: 1rem;
+      top: 1rem
+  }
+  
+  
+    
+    .card {
+      background-color: #ffffff;
+      border: 1px solid #e3e8ee;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      padding: 15px;
+  }
+  
+  .card:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .project-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+  }
+  
+  .project-title {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: #333;
+  }
+  
+  .user-avatar {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      font-weight: bold;
+      color: #fff;
+      margin-right: 10px;
+      background-color: #7a6ff0;
+  }
+  
+  .project-info .title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 5px;
+  }
+  
+  .sub-text {
+      font-size: 14px;
+      color: #888;
+  }
+  
+  .drodown {
+      position: relative;
+      display: inline-block;
+  }
+  
+  .dropdown-toggle {
+      cursor: pointer;
+  }
+  
+  .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: #fff;
+      border: 1px solid #e3e8ee;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+  }
+  
+  .link-list-opt {
+      list-style: none;
+      padding: 0;
+  }
+  
+  .link-list-opt li {
+      margin-bottom: 10px;
+      list-style: none;
+  }
+  
+  .project-details p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 15px;
+  }
+  
+  .project-progress {
+      margin-bottom: 1rem;
+  }
+  
+  .project-progress-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: .5rem;
+  }
+  
+  .project-progress-task {
+      display: flex;
+      align-items: center;
+      color: #8094ae;
+  }
+  
+  .project-progress-task .icon {
+      font-size: 1rem;
+      line-height: 1.5rem;
+      margin-right: .25rem;
+  }
+  
+  .project-progress-percent {
+      color: #526484;
+      font-weight: 1000;
+  }
+  
+  .project-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+  }
+  
+  .project-users {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .project-users li {
+    margin-right: -7px;
+    list-style: none;
+    padding: 0;
+  
+  }
+  
+  
+  
+  .bg-purple {
+      background-color: #7a6ff0;
+  }
+  
+  .bg-primary {
+      background-color: #007bff;
+  }
+  
+  .bg-blue {
+      background-color: #007bff;
+  }
+  
+  .bg-light {
+      background-color: #f8f9fa;
+  }
+  
+  .bg-warning {
+      background-color: #ffc107;
+  }
+  
+  .card-bordered {
+    border: 1px solid #dbdfea;
+  }
+  
+  
+  .user-avatar,[class^=user-avatar]:not([class*=-group]) {
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    background: #798bff;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    flex-shrink: 0;
+    position: relative
+  }
+  
+  .user-avatar+.user-info,[class^=user-avatar]:not([class*=-group])+.user-info {
+    margin-left: 1rem
+  }
+  
+  .user-avatar+.user-name,[class^=user-avatar]:not([class*=-group])+.user-name {
+    margin-left: .75rem
+  }
+  
+  .user-avatar img,[class^=user-avatar]:not([class*=-group]) img {
+    border-radius: 50%
+  }
+  
+  .user-avatar.md+.user-info,[class^=user-avatar]:not([class*=-group]).md+.user-info {
+    margin-left: 1.5rem
+  }
+  
+  .user-avatar.md+.user-name,[class^=user-avatar]:not([class*=-group]).md+.user-name {
+    margin-left: 1.25rem
+  }
+  
+  .user-avatar .edit,[class^=user-avatar]:not([class*=-group]) .edit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 50%;
+    background-color: rgba(31,43,58,.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    opacity: 0;
+    transition: opacity .3s
+  }
+  
+  .user-avatar:hover .edit,[class^=user-avatar]:not([class*=-group]):hover .edit {
+    opacity: 1
+  }
+  
+  .user-avatar .status,[class^=user-avatar]:not([class*=-group]) .status {
+    border: 2px solid #fff;
+    position: absolute;
+    bottom: 0;
+    right: 0
+  }
+  
+  .user-avatar.sq,[class^=user-avatar]:not([class*=-group]).sq {
+    border-radius: 4px
+  }
+  
+  .user-avatar.sq img,[class^=user-avatar]:not([class*=-group]).sq img {
+    border-radius: 4px
+  }
+  
+  .user-avatar.sq .status,[class^=user-avatar]:not([class*=-group]).sq .status {
+    bottom: -6px;
+    right: -6px
+  }
+  
+  .user-avatar-multiple {
+    background-color: transparent!important
+  }
+  
+  .user-avatar-multiple .user-avatar {
+    position: absolute;
+    height: 70%;
+    width: 70%;
+    font-size: 80%;
+    border: 2px solid #fff
+  }
+  
+  .user-avatar-multiple .user-avatar:nth-child(1) {
+    top: 0;
+    right: 0
+  }
+  
+  .user-avatar-multiple .user-avatar:nth-child(2) {
+    bottom: 0;
+    left: 0
+  }
+  
+  .user-avatar-multiple .user-avatar:nth-child(n+3) {
+    display: none
+  }
+
+ 
+  
+  
+  .g-1:not(.row) {
+    margin: -.1875rem;
+  }
+  .g-1:not(.row)>div,.g-1:not(.row)>li {
+    padding: .1875rem
+  }
+  
+  
+ 
+  
+
+
+
+  .list li:not(:last-child) {
+    padding-bottom: .5rem
+}
+
+.list li:before {
+    position: absolute;
+    left: 0;
+    font-size: 14px;
+    line-height: 1.5rem;
+    font-family: Nioicon;
+    content: "\e980"
+}
+
+.list li span {
+    color: #8094ae
+}
+
+.list li ul {
+    margin-top: .5rem
+}
+
+.list-checked li:before {
+    color: #6576ff;
+    content: "\e9b9"
+}
+
+.list-checked-circle li:before {
+    color: #6576ff;
+    content: "\e9b7"
+}
+
+.list-cross li:before {
+    color: rgba(232,83,71,.8);
+    content: "\ea02"
+}
+
+.list-status {
+    list-style: none;
+    line-height: 1.3
+}
+
+.list-status li {
+    display: inline-flex;
+    align-items: center;
+    padding-right: 1rem;
+    vertical-align: middle
+}
+
+.list-status .icon {
+    margin-right: .375rem;
+    line-height: 1.3
+}
+
+.list-lg li {
+    padding-left: 2rem
+}
+
+.list-lg li:not(:last-child) {
+    padding-bottom: .75rem
+}
+
+.list-lg li:before {
+    font-size: 1.35rem
+}
+
+.list-sm li {
+    padding-left: 1.2rem
+}
+
+.list-sm li:not(:last-child) {
+    padding-bottom: .35rem
+}
+
+.list-sm li:before {
+    font-size: 12px
+}
+
+.list-step li {
+    color: #8094ae;
+    font-weight: 500
+}
+
+.list-step li:before {
+    content: "\e9e0"
+}
+
+.list-step li.list-step-current {
+    color: #364a63
+}
+
+.list-step li.list-step-current:before {
+    content: "\ea1b";
+    color: #6576ff
+}
+
+.list-step li.list-step-done {
+    color: #526484
+}
+
+.list-step li.list-step-done:before {
+    content: "\e9b6";
+    color: #1ee0ac
+}
+
+.list-plain a {
+    color: #526484;
+    display: block;
+    line-height: 1.3;
+    padding: .5rem 0
+}
+
+.list-plain a:hover {
+    color: #6576ff
+}
+
+.list-category a {
+    font-weight: 500
+}
+
+.list-download li>a {
+    display: inline-block;
+    padding: .25rem
+}
+
+.list-download li>a>.icon {
+    margin: 0 .25rem;
+    font-size: 1.25rem
+}
+
+.list-primary li:before {
+    color: #6576ff
+}
+
+.list-secondary li:before {
+    color: #364a63
+}
+
+.list-success li:before {
+    color: #1ee0ac
+}
+
+.list-info li:before {
+    color: #09c2de
+}
+
+.list-warning li:before {
+    color: #f4bd0e
+}
+
+.list-danger li:before {
+    color: #e85347
+}
+
+.list-light li:before {
+    color: #e5e9f2
+}
+
+.list-dark li:before {
+    color: #1f2b3a
+}
+
+.list-gray li:before {
+    color: #8091a7
+}
+
+.list-lighter li:before {
+    color: #f5f6fa
+}
+
+.link-bdr-t,.link-check+.link-check,.link-list+.link-list,.link-list-opt li+li,.link-list-plain li+li,.link-tidy li+li {
+    border-top: 1px solid #e5e9f2
+}
+
+.link-bdr-b {
+    border-bottom: 1px solid #e5e9f2
+}
+
+.link-list-plain.sm a,.link-pd-sm,.link-tidy.sm li {
+    padding: 6px 1rem
+}
+
+.link-act-check:after,.link-check li a.active:after,.link-check li.active>a:after,.link-list-opt a.active:after,.link-list-opt li.active>a:after {
+    content: "\e9bd";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 1rem;
+    font-family: Nioicon
+}
+
+.link-check {
+    padding: .5rem 0
+}
+
+.link-check .divider {
+    margin: .5rem 0
+}
+
+.link-check li {
+    display: block
+}
+
+.link-check li a,.link-check li>span {
+    display: block;
+    line-height: 1.25rem;
+    padding: .35rem 1rem
+}
+
+.link-check li>span {
+    text-transform: uppercase;
+    color: #364a63;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px
+}
+
+.link-check li a {
+    display: flex;
+    align-items: center;
+    color: #526484;
+    font-size: 13px;
+    position: relative
+}
+
+.link-check li a:hover {
+    color: #6576ff;
+    background: #f5f6fa
+}
+
+.link-check li .icon {
+    width: 1.75rem;
+    font-size: 1.125rem
+}
+
+.link-tidy.no-bdr {
+    padding: .5rem 0
+}
+
+.link-tidy.no-bdr li:not(.divider) {
+    border-top-width: 0
+}
+
+.link-tidy .divider {
+    margin: .5rem 0
+}
+
+.link-tidy li {
+    position: relative;
+    padding: .625rem 1.1rem;
+    line-height: 1.3rem
+}
+
+.link-list {
+    padding: .75rem 0
+}
+
+.link-list .divider {
+    margin: .5rem 0
+}
+
+.link-list a {
+    display: flex;
+    align-items: center;
+    color: #526484;
+    font-size: 13px;
+    line-height: 1.4rem;
+    font-weight: 500;
+    padding: .575rem 0;
+    position: relative
+}
+
+.link-list a:hover {
+    color: #6576ff
+}
+
+.link-list a .icon {
+    font-size: 1.125rem;
+    width: 1.5rem;
+    line-height: 1
+}
+
+.link-list-opt.no-bdr {
+    padding: .5rem 0
+}
+
+.link-list-opt.no-bdr li:not(.divider) {
+    border-top-width: 0
+}
+
+.link-list-opt .divider {
+    margin: .5rem 0
+}
+
+.link-list-opt a {
+    display: flex;
+    align-items: center;
+    padding: .625rem 1.25rem;
+    font-size: 12px;
+    font-weight: 500;
+    color: #526484;
+    transition: all .4s;
+    line-height: 1.3rem;
+    position: relative
+}
+
+.link-list-opt a:hover {
+    color: #6576ff;
+    background: #f5f6fa
+}
+
+.link-list-opt a .icon {
+    font-size: 1.125rem;
+    width: 1.75rem;
+    opacity: .8
+}
+
+.link-list-opt a.disabled,.link-list-opt li.disabled>a {
+    pointer-events: none;
+    color: #8094ae;
+    opacity: .7
+}
+
+.link-list-opt .opt-head {
+    padding: .25rem 1.25rem;
+    color: #8094ae
+}
+
+.link-list-opt.ui-v2 a {
+    font-weight: 400
+}
+
+.link-list-opt.no-bdr+.link-check {
+    margin-top: -.75rem
+}
+
+.link-list-opt.ui-colored a.active,.link-list-opt.ui-colored li.active>a {
+    color: #6576ff
+}
+
+.link-list-menu {
+    padding: .75rem 0
+}
+
+.link-list-menu .divider {
+    margin: .5rem 0
+}
+
+.link-list-menu a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: .75rem 1.25rem;
+    font-weight: 500;
+    color: #526484;
+    transition: all .4s;
+    line-height: 1.3rem
+}
+
+.link-list-menu a:after {
+    position: absolute;
+    font-size: 1rem;
+    font-family: Nioicon;
+    right: 1.25rem;
+    content: "\e9d3";
+    color: #8094ae;
+    transition: .3s ease
+}
+
+.link-list-menu a .icon {
+    font-size: 1.125rem;
+    width: 1.75rem;
+    opacity: .8;
+    color: #8094ae;
+    margin-top: -2px
+}
+
+.link-list-menu a.active,.link-list-menu a.active .icon,.link-list-menu a.active:after,.link-list-menu a:hover,.link-list-menu a:hover .icon,.link-list-menu a:hover:after,.link-list-menu li.active>a,.link-list-menu li.active>a .icon,.link-list-menu li.active>a:after {
+    color: #6576ff
+}
+
+.link-list-menu.nav {
+    display: block
+}
+
+@media (min-width: 576px) {
+    .link-list-menu a {
+        padding:1rem 1.5rem
+    }
+}
+
+.link-list-plain.no-bdr {
+    padding: .5rem 0
+}
+
+.link-list-plain.no-bdr li {
+    border-top-width: 0
+}
+
+.link-list-plain .divider {
+    margin: .5rem 0
+}
+
+.link-list-plain a {
+    display: flex;
+    align-items: center;
+    padding: .5rem 1.25rem;
+    color: #526484;
+    transition: all .4s;
+    line-height: 1.4rem;
+    position: relative
+}
+
+.link-list-plain a:hover {
+    color: #6576ff;
+    background: #f5f6fa
+}
+
+.link-list-plain a .icon {
+    font-size: 1.125rem;
+    width: 1.75rem;
+    opacity: .8;
+    color: #6576ff
+}
+
+.link-list-plain a.active,.link-list-plain li.active>a {
+    color: #6576ff;
+    background: #f5f6fa
+}
+
+.link-list-plain.text-center a {
+    justify-content: center;
+    padding-left: .25rem;
+    padding-right: .25rem
+}
+
+.link-list-plain.li-col2x>li {
+    border-right: 1px solid #e5e9f2;
+    border-bottom: 1px solid #e5e9f2;
+    border-top: 0
+}
+
+.link-list-plain.li-col2x>li:nth-child(2n) {
+    border-right: none
+}
+
+.link-list-plain.li-col3x>li {
+    border-right: 1px solid #e5e9f2;
+    border-bottom: 1px solid #e5e9f2;
+    border-top: 0
+}
+
+.link-list-plain.li-col3x>li:nth-child(3n) {
+    border-right: none
+}
+
+.link-list-plain.li-col4x>li {
+    border-right: 1px solid #e5e9f2;
+    border-bottom: 1px solid #e5e9f2;
+    border-top: 0
+}
+
+.link-list-plain.li-col4x>li:nth-child(4n) {
+    border-right: none
+}
+
+.link-list-template a {
+    font-weight: 400
+}
+
+.passcode-icon {
+  display: none
+}
+
+.passcode-icon.icon-show {
+  display: block
+}
+
+.is-shown .passcode-icon.icon-show {
+  display: none
+}
+
+.is-hidden .passcode-icon.icon-show {
+  display: block
+}
+
+.is-shown .passcode-icon.icon-hide {
+  display: block
+}
+
+.is-hidden .passcode-icon.icon-hide {
+  display: none
+}
+
+.link-check {
+  padding: .5rem 0
+}
+
+.link-check .divider {
+  margin: .5rem 0
+}
+
+.link-check li {
+  display: block
+}
+
+.link-check li a,.link-check li>span {
+  display: block;
+  line-height: 1.25rem;
+  padding: .35rem 1rem
+}
+
+.link-check li>span {
+  text-transform: uppercase;
+  color: #364a63;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px
+}
+
+.link-check li a {
+  display: flex;
+  align-items: center;
+  color: #526484;
+  font-size: 13px;
+  position: relative
+}
+
+.link-check li a:hover {
+  color: #6576ff;
+  background: #f5f6fa
+}
+
+.link-check li .icon {
+  width: 1.75rem;
+  font-size: 1.125rem
+}
+
+.link-tidy.no-bdr {
+  padding: .5rem 0
+}
+
+.link-tidy.no-bdr li:not(.divider) {
+  border-top-width: 0
+}
+
+.link-tidy .divider {
+  margin: .5rem 0
+}
+
+.link-tidy li {
+  position: relative;
+  padding: .625rem 1.1rem;
+  line-height: 1.3rem
+}
+
+.link-list {
+  padding: .75rem 0
+}
+
+.link-list .divider {
+  margin: .5rem 0
+}
+
+.link-list a {
+  display: flex;
+  align-items: center;
+  color: #526484;
+  font-size: 13px;
+  line-height: 1.4rem;
+  font-weight: 500;
+  padding: .575rem 0;
+  position: relative
+}
+
+.link-list a:hover {
+  color: #6576ff
+}
+
+.link-list a .icon {
+  font-size: 1.125rem;
+  width: 1.5rem;
+  line-height: 1
+}
+
+.link-list-opt.no-bdr {
+  padding: .5rem 0
+}
+
+.link-list-opt.no-bdr li:not(.divider) {
+  border-top-width: 0
+}
+
+.link-list-opt .divider {
+  margin: .5rem 0
+}
+
+.link-list-opt a {
+  display: flex;
+  align-items: center;
+  padding: .625rem 1.25rem;
+  font-size: 12px;
+  font-weight: 500;
+  color: #526484;
+  transition: all .4s;
+  line-height: 1.3rem;
+  position: relative
+}
+
+.link-list-opt a:hover {
+  color: #6576ff;
+  background: #f5f6fa
+}
+
+.link-list-opt a .icon {
+  font-size: 1.125rem;
+  width: 1.75rem;
+  opacity: .8
+}
+
+.link-list-opt a.disabled,.link-list-opt li.disabled>a {
+  pointer-events: none;
+  color: #8094ae;
+  opacity: .7
+}
+
+.link-list-opt .opt-head {
+  padding: .25rem 1.25rem;
+  color: #8094ae
+}
+
+.link-list-opt.ui-v2 a {
+  font-weight: 400
+}
+
+.link-list-opt.no-bdr+.link-check {
+  margin-top: -.75rem
+}
+
+.link-list-opt.ui-colored a.active,.link-list-opt.ui-colored li.active>a {
+  color: #6576ff
+}
+
+.link-list-menu {
+  padding: .75rem 0
+}
+
+.link-list-menu .divider {
+  margin: .5rem 0
+}
+
+.link-list-menu a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: .75rem 1.25rem;
+  font-weight: 500;
+  color: #526484;
+  transition: all .4s;
+  line-height: 1.3rem
+}
+
+.link-list-menu a:after {
+  position: absolute;
+  font-size: 1rem;
+  font-family: Nioicon;
+  right: 1.25rem;
+  content: "\e9d3";
+  color: #8094ae;
+  transition: .3s ease
+}
+
+.link-list-menu a .icon {
+  font-size: 1.125rem;
+  width: 1.75rem;
+  opacity: .8;
+  color: #8094ae;
+  margin-top: -2px
+}
+
+.link-list-menu a.active,.link-list-menu a.active .icon,.link-list-menu a.active:after,.link-list-menu a:hover,.link-list-menu a:hover .icon,.link-list-menu a:hover:after,.link-list-menu li.active>a,.link-list-menu li.active>a .icon,.link-list-menu li.active>a:after {
+  color: #6576ff
+}
+
+.link-list-menu.nav {
+  display: block
+}
+
+@media (min-width: 576px) {
+  .link-list-menu a {
+      padding:1rem 1.5rem
+  }
+}
+
+.link-list-plain.no-bdr {
+  padding: .5rem 0
+}
+
+.link-list-plain.no-bdr li {
+  border-top-width: 0
+}
+
+.link-list-plain .divider {
+  margin: .5rem 0
+}
+
+.link-list-plain a {
+  display: flex;
+  align-items: center;
+  padding: .5rem 1.25rem;
+  color: #526484;
+  transition: all .4s;
+  line-height: 1.4rem;
+  position: relative
+}
+
+.link-list-plain a:hover {
+  color: #6576ff;
+  background: #f5f6fa
+}
+
+.link-list-plain a .icon {
+  font-size: 1.125rem;
+  width: 1.75rem;
+  opacity: .8;
+  color: #6576ff
+}
+
+.link-list-plain a.active,.link-list-plain li.active>a {
+  color: #6576ff;
+  background: #f5f6fa
+}
+
+.link-list-plain.text-center a {
+  justify-content: center;
+  padding-left: .25rem;
+  padding-right: .25rem
+}
+
+.link-list-plain.li-col2x>li {
+  border-right: 1px solid #e5e9f2;
+  border-bottom: 1px solid #e5e9f2;
+  border-top: 0
+}
+
+.link-list-plain.li-col2x>li:nth-child(2n) {
+  border-right: none
+}
+
+.link-list-plain.li-col3x>li {
+  border-right: 1px solid #e5e9f2;
+  border-bottom: 1px solid #e5e9f2;
+  border-top: 0
+}
+
+.link-list-plain.li-col3x>li:nth-child(3n) {
+  border-right: none
+}
+
+.link-list-plain.li-col4x>li {
+  border-right: 1px solid #e5e9f2;
+  border-bottom: 1px solid #e5e9f2;
+  border-top: 0
+}
+
+  
+.text-soft {
+  color: #8094ae!important
+}
+  
+.progress-bar {
+  height: 100%;
+  line-height: 1
+}
+
+.progress-sm {
+  height: .25rem
+}
+
+.progress-md {
+  height: .375rem
+}
+
+.progress-lg {
+  height: 1rem
+}
+
+.progress-pill,.progress-pill .progress-bar {
+  border-radius: 100px
+}
+
+.progress-text {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #8094ae;
+  margin-bottom: .25rem
+}
+
+.progress-label {
+  font-size: .875rem
+}
+
+.progress-amount {
+  font-size: 12px;
+  padding-left: .5rem
+}
+
+.progress-alt {
+  display: flex;
+  align-items: center;
+  overflow: visible
+}
+
+.progress-alt .progress-bar {
+  border-radius: 2px
+}
+
+.progress-reverse {
+  flex-direction: row-reverse
+}
+
+.progress-bordered .progress-bar {
+  margin-top: -2px;
+  border: 2px solid #fff;
+  box-sizing: content-box
+}
+
+.progress-bordered .progress-bar:not(:first-child) {
+  margin-left: -4px
+}
+
+.progress-bordered.progress-reverse .progress-bar {
+  margin-left: 0
+}
+
+.progress-bordered.progress-reverse .progress-bar:not(:last-child) {
+  margin-left: -5px
+}
+
+.progress-rating {
+  display: flex;
+  align-items: center
+}
+
+.progress-rating-title {
+  width: 48px;
+  flex-grow: 0;
+  line-height: 1.25rem
+}
+
+.progress-rating-percent {
+  width: 40px;
+  line-height: 1.25rem;
+  text-align: right
+}
+
+.progress-rating .progress {
+  flex-grow: 1
+}
+
+
+  
+  </style>
+
+
+
+  {% endblock %}
+  
